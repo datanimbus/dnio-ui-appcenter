@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { filter, switchMap } from 'rxjs/operators';
 import { AppService } from 'src/app/service/app.service';
 import { CommonService, GetOptions } from 'src/app/service/common.service';
 import { DashboardService } from '../../dashboard.service';
@@ -49,10 +49,9 @@ export class IntegrationListComponent implements OnInit {
   getFlows() {
     const filter: any = {};
     const options: GetOptions = {
-      count: -1,
       filter,
       select: 'name app',
-      sort: 'name'
+      sort: 'name',
     };
 
     if (!this.commonService.userDetails.isSuperAdmin
@@ -65,7 +64,13 @@ export class IntegrationListComponent implements OnInit {
     if (this.subscriptions.getFlows) {
       this.subscriptions.getFlows.unsubscribe();
     }
-    this.subscriptions.getFlows = this.commonService.get('pm', `/${this.commonService.app._id}/flow`, options).subscribe(res => {
+   
+    this.subscriptions.getFlows =  this.commonService.get('pm', `/${this.commonService.app._id}/flow/utils/count`).pipe(switchMap((count: any) => {
+      return this.commonService.get('pm', `/${this.commonService.app._id}/flow`, {
+        count: count,
+        ...options
+      });
+    })).subscribe(res => {
       this.showLazyLoader = false;
       this.records = res;
       // if (!this.activeId) {
