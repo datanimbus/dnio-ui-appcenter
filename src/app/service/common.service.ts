@@ -1620,7 +1620,7 @@ export class CommonService {
     if (!self.serviceMap[serviceId]) {
       self.serviceMap[serviceId] = self
         .get('sm', `/${this.app._id}/service/` + serviceId, {
-          select: '_id,name,app,api,definition,attributeList,workflowConfig,role',
+          select: '_id name app api definition attributeList workflowConfig role',
           filter: { app: this.app._id }
         })
         .toPromise();

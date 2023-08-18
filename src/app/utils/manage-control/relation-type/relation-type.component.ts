@@ -103,7 +103,7 @@ export class RelationTypeComponent implements OnInit, OnDestroy, AfterViewInit {
         else if (self.relatedServiceDef && self.relatedServiceDef.type === 'Geojson') {
           this.searchFieldType = 'geojson'
         }
-        self.url = '/' + self.commonService.app._id + res.api;
+        self.url = '/' + self.commonService.app._id+ res.api;
         self.getNoOfRecords().then(() => {
           if (self.control.value) {
             if (self.relatedField !== '_id') {
