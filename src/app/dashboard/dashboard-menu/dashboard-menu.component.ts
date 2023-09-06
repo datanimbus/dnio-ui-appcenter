@@ -3,6 +3,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { CommonService, GetOptions } from '../../service/common.service';
 import { WorkflowListComponent } from './workflow-list/workflow-list.component';
+import { DashboardService } from 'src/app/dashboard/dashboard.service';
 
 @Component({
   selector: 'odp-dashboard-menu',
@@ -23,7 +24,9 @@ export class DashboardMenuComponent implements OnInit, OnDestroy {
   };
   hideWorkflows: boolean;
   hideInteraction: boolean;
-  constructor(private router: Router, private commonService: CommonService) {
+  constructor(private router: Router, 
+    private commonService: CommonService,
+    private dashboardService: DashboardService) {
     this.subscriptions = {};
   }
 
@@ -35,7 +38,11 @@ export class DashboardMenuComponent implements OnInit, OnDestroy {
       this.setActiveMenu(event.url)
     });
     this.getWorflowItemsCount()
-    // this.wfList.getServices()
+    this.dashboardService.appChanged.subscribe(app => {
+      this.openPanel['workflow']=false;
+      this.openPanel['interaction']=false;
+      this.openPanel['ds']=false;
+    });
   }
 
   ngOnDestroy() {
