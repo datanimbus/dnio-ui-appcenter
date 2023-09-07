@@ -148,6 +148,13 @@ export class FlowNodeViewComponent implements OnInit {
     return this.node.options.url;
   }
 
+  getInteractionLink(item?: any) {
+    if (item) {
+      return `/${this.commonService.app._id}/flow/${this.node.options.flow._id}/${item.headers['dnio-interaction-id']}`;
+    }
+    return `/${this.commonService.app._id}/flow/${this.node.options.flow._id}/${this.node.state.headers['dnio-interaction-id']}`;
+  }
+
   get showNameOfNodeType() {
     if (this.node.type == 'DATASERVICE' || this.node.type == 'FUNCTION' || this.node.type == 'FLOW') {
       return true;
