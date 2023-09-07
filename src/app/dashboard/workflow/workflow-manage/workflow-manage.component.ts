@@ -782,6 +782,14 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
     }
     return false;
   }
+
+  get canSaveDraft(){
+    const self = this;
+    if (self.selectedData && (self.selectedData.status === 'Draft') && self.hasPermission('PUT')) {
+      return true;
+    }
+    return false;
+  }
   get canResubmit() {
     const self = this;
     if (
