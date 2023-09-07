@@ -1,6 +1,6 @@
 {
   "/": {
-    "target": "https://bifrost.ds.datanimbus.com",
+    "target": "https://dev.datanimbus.io",
     "secure": false,
     "changeOrigin": true
   }
