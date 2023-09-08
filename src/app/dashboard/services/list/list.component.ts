@@ -1227,7 +1227,9 @@ export class ListComponent implements OnInit, OnDestroy {
       self.subscriptions['bulkDelete'] = null;
     }
     self.apiCalls.deleteRequest = true;
-    self.commonService.delete('api', self.api + '/utils/bulkDelete', { ids }).subscribe(
+
+    
+    self.commonService.delete('api', self.api + '/utils/bulkDelete', { ids, remarks: this.respondControl.value }).subscribe(
       res => {
         self.apiCalls.deleteRequest = false;
         if (res._workflow) {
