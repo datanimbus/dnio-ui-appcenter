@@ -88,6 +88,9 @@ export class FlowNodeViewComponent implements OnInit {
     this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${this.flowData._id}/${this.node.interactionId}/state/${this.node._id}/data`).subscribe(res => {
       this.node.state.body = res?.body || {};
       this.node.state.responseBody = res?.responseBody || {};
+      if (this.node.type == 'RESPONSE') {
+        this.node.state.responseBody = this.node.state.body;
+      }
       this.fetchingData = false;
     }, err => {
       this.fetchingData = false;
