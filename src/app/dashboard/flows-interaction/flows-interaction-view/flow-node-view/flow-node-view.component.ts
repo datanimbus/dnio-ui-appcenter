@@ -33,7 +33,9 @@ export class FlowNodeViewComponent implements OnInit {
     if (this.node.type == 'DATASERVICE' && !this.node.options.name) {
       this.commonService.getService(this.node.options._id)
     }
-
+    if (this.node.type == 'RESPONSE') {
+      this.node.state.responseData = this.node.state.payload;
+    }
   }
 
   getContentType(contentType: string) {
