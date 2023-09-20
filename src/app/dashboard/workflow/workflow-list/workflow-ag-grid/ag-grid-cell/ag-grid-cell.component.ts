@@ -197,9 +197,9 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
     if (audit && audit.id == self.commonService.userDetails._id) {
       return false;
     }
-    if (self.data.status !== 'Pending') {
-      return false;
-    }
+    // if (self.data.status !== 'Pending') {
+    //   return false;
+    // }
     if (!this.commonService.canRespondToWF(this.appService.serviceData, this.data.checkerStep)) {
       return false;
     }
@@ -215,5 +215,9 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
 
   onCheckChanged(val) {
     this.params.node.setSelected(val);
+    this.gridService.draftSelected({
+      node: this.params.node.data,
+      value: val
+    })
   }
 }

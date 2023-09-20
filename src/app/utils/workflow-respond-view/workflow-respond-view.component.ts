@@ -114,8 +114,8 @@ export class WorkflowRespondViewComponent implements OnInit {
       action,
       remarks: this.remarks,
       attachments: this.workflowUploadedFiles,
-      ids: [this.workflowData._id],
-      data: this.workflowData.data.new
+      ids: Array.isArray(this.workflowData) ? this.workflowData : [this.workflowData._id],
+      ...(this.workflowData.data && {data: this.workflowData.data.new} )
     };
     this.commonService.put('api', `${this.api}/utils/workflow/action`, payload)
       .subscribe((res: any) => {
