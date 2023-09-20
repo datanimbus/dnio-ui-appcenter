@@ -135,7 +135,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
   activeId: string;
   workflowList: Array<any>;
   breadcrumb: Array<any>;
-  selected: any[];
+  selectedDrafts: Array<any> = [];
   constructor(
     private commonService: CommonService,
     private appService: AppService,
@@ -176,15 +176,14 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
 
     this.respondControl = new UntypedFormControl();
     this.workflowList = [];
-    this.selected = [];
+    this.selectedDrafts = [];
     this.gridService.selectedDrafts.subscribe(option => {
       if (option.value) {
-        this.selected.push(option.node._id)
+        this.selectedDrafts.push(option.node._id)
       }
       if (option.value === false) {
-        this.selected = this.selected.filter(ele => ele !== option.node._id)
+        this.selectedDrafts = this.selectedDrafts.filter(ele => ele !== option.node._id)
       }
-      console.log(this.selected);
     }
     )
 
@@ -1339,7 +1338,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
 
   bulkSubmit() {
     const self = this;
-    const wfData = this.selected;
+    const wfData = this.selectedDrafts;
     // wfData.data.new = this.form.value;
     const respondModal = this.modalService.open(WorkflowRespondViewComponent, { centered: true, size: 'lg', beforeDismiss: () => false });
     respondModal.componentInstance.title = 'Submit Drafts';
@@ -1349,13 +1348,13 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     respondModal.result.then(
       close => {
         if (close) {
-          this.selected = []
+          this.selectedDrafts = []
           this.getTotalRecords()
           this.getCounts();
         }
       },
       dismiss => {
-        this.selected = []
+        this.selectedDrafts = []
       }
     );
   }

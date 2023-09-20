@@ -188,9 +188,9 @@
                     </div>
 
                     <button type="button" class="btn btn-primary btn-min-width" id="submitDraft"
-                        *ngIf="activeTab === 3 && selected.length > 0" (click)="bulkSubmit()">
+                        *ngIf="activeTab === 3 && selectedDrafts.length > 0" (click)="bulkSubmit()">
                         <span class="fa fa-arrow-circle-right mr-2"></span>
-                        <span class="text">Submit ({{selected.length}})</span>
+                        <span class="text">Submit ({{selectedDrafts.length}})</span>
                     </button>
                 </div>
             </ng-container>
