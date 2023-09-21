@@ -135,6 +135,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
   activeId: string;
   workflowList: Array<any>;
   breadcrumb: Array<any>;
+  selectedDrafts: Array<any> = [];
   constructor(
     private commonService: CommonService,
     private appService: AppService,
@@ -175,6 +176,16 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
 
     this.respondControl = new UntypedFormControl();
     this.workflowList = [];
+    this.selectedDrafts = [];
+    this.gridService.selectedDrafts.subscribe(option => {
+      if (option.value) {
+        this.selectedDrafts.push(option.node._id)
+      }
+      if (option.value === false) {
+        this.selectedDrafts = this.selectedDrafts.filter(ele => ele !== option.node._id)
+      }
+    }
+    )
 
   }
 
@@ -1323,6 +1334,29 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
   removedSavedView(event) {
     this.selectedSavedView = null;
     this.appService.existingFilter = null;
+  }
+
+  bulkSubmit() {
+    const self = this;
+    const wfData = this.selectedDrafts;
+    // wfData.data.new = this.form.value;
+    const respondModal = this.modalService.open(WorkflowRespondViewComponent, { centered: true, size: 'lg', beforeDismiss: () => false });
+    respondModal.componentInstance.title = 'Submit Drafts';
+    respondModal.componentInstance.workflowData = wfData;
+    respondModal.componentInstance.serviceData = this.schema;
+    respondModal.componentInstance.actions = ['submit'];
+    respondModal.result.then(
+      close => {
+        if (close) {
+          this.selectedDrafts = []
+          this.getTotalRecords()
+          this.getCounts();
+        }
+      },
+      dismiss => {
+        this.selectedDrafts = []
+      }
+    );
   }
 
   get hasFilters() {

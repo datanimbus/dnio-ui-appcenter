@@ -35,7 +35,7 @@
 
   <ng-container *ngIf="type === 'Checkbox'">
     <div class="d-flex align-items-center mt-1">
-      <odp-round-check [checked]="data._checked" [disabled]="!(status=='Pending' && canRespond)"
+      <odp-round-check [checked]="data._checked" [disabled]="!( canRespond)"
         (checkedChange)="onCheckChanged($event)"></odp-round-check>
     </div>
   </ng-container>

@@ -12,6 +12,7 @@ export class WorkflowAgGridService {
   requestedByList: Array<any>;
   respondedByList: Array<any>;
   responded: Subject<any> = new Subject();
+  selectedDrafts: Subject<any> = new Subject()
   constructor() {
     const self = this;
     self.selectAll = new EventEmitter();
@@ -22,5 +23,8 @@ export class WorkflowAgGridService {
     this.responded.next()
   }
 
+  draftSelected(val){
+    this.selectedDrafts.next(val)
+  }
 
 }
