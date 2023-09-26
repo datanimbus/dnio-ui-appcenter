@@ -556,7 +556,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     get selectedApp() {
-        return this.commonService.app;
+        return this.commonService.app[0];
     }
 
     get enableB2b() {
