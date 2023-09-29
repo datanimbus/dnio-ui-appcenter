@@ -10,6 +10,13 @@
         <span class="fa fa-times mr-2"></span>
         <span class="text">Clear Filters</span>
         </button>
+        <div class="ml-auto mr-2">
+            <span class="mr-2 hover badge badge-success font-12" (click)="filterStatus('Success')">SUCCESS</span>
+            <span class="mr-2 hover badge badge-warning font-12" (click)="filterStatus('Pending')">PENDING</span>
+            <span class="mr-4 hover badge badge-danger font-12" (click)="filterStatus('Error')" >ERROR</span>
+            <span class="mr-3 ml-3">Total Interactions : {{currentRecordsCount}}</span>
+        </div>
+  
     </div>
     <div class="list-wrapper border rounded bg-white mt-2">
         <!-- <div class="list-group list-group-flush">

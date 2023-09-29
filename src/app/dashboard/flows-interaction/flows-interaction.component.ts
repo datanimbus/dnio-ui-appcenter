@@ -545,4 +545,10 @@ export class FlowsInteractionComponent implements OnInit {
   rowDoubleClicked(event: any) {
     this.router.navigate([event.data._id], { relativeTo: this.route });
   }
+
+  filterStatus(type){
+    this.apiConfig.filter = {status: type.toUpperCase()};
+    this.filterModel =  this.apiConfig.filter
+    this.getRecordsCount()
+  }
 }
