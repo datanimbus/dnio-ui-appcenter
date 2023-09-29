@@ -17,6 +17,7 @@ export class FlowNodeViewComponent implements OnInit {
   toggle: any;
   completeData: any;
   fetchingData: boolean;
+  currentTab: number = 1;
   constructor(private appService: AppService,
     private flowsService: FlowsInteractionService,
     private commonService: CommonService) {
