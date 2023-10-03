@@ -82,7 +82,7 @@ export class AppSwitcherComponent implements OnInit, AfterViewInit {
 
     getAppDetails(app: App) {
         const self = this;
-        self.commonService.get('user', '/app/' + app._id).subscribe((res: any) => {
+        self.commonService.get('user', '/data/app/' + app._id).subscribe((res: any) => {
             // app = Object.assign(app, res);
             app.description = res.description;
             app.appCenterStyle = res.appCenterStyle;
