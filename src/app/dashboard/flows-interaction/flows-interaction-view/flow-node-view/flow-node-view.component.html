@@ -13,7 +13,7 @@
         class="nav-link hover"
         [ngClass]="{'active text-dark': currentTab === 2, 'text-secondary': currentTab !== 2}"
         (click)="currentTab = 2"
-        >Headers and Body</div
+        >Request Details</div
       >
     </li>
     <li class="nav-item">
@@ -22,7 +22,7 @@
         [ngClass]="{'active text-dark': currentTab === 3, 'text-secondary': currentTab !== 3}"
         style="border-right: none"
         (click)="currentTab = 3"
-        >Request and Response</div
+        >Response Details</div
       >
     </li>
   </ul>
@@ -159,47 +159,6 @@
                         </div>
                 </div>
                 <div *ngIf="currentTab === 2">
-                    <ng-container *ngIf="node.state?.headers">
-                        <div class="d-flex align-items-center align-items-stretch mb-1 my-3 ml-1">
-                            <div class="d-flex align-items-center justify-content-between w-100">
-                                <div class="d-flex align-items-center">
-                                    <span class="dsi dsi-object font-16 mr-2 text-primary"></span>
-                                    <span class="fw-600">Headers ({{(node.state?.headers | keyvalue).length}})</span>
-                                </div>
-                                <button type="button" class="btn btn-link btn-sm"
-                                    (click)="toggle['headers']=!toggle['headers']">
-                                    {{toggle['headers'] ? 'Hide':'Show'}} Header
-                                </button>
-                            </div>
-                        </div>
-                        <ng-container *ngIf="toggle['headers']">
-                            <div class="d-flex align-items-center align-items-stretch mb-1"
-                                *ngFor="let item of node.state?.headers | keyvalue">
-                                <div class="px-2 header-key fw-400 font-12 text-secondary">{{item.key}}</div>
-                                <div class="px-2 header-value w-100 fw-400 text-dark">{{maskValue(item.value,item.key)}}
-                                </div>
-                            </div>
-                        </ng-container>
-                    </ng-container>
-            
-                    <ng-container *ngIf="node.state?.retry && node.state?.retry.length > 0">
-                        <table class="table table-bordered">
-                            <tr>
-                                <th>Retry Count</th>
-                                <th>Timestamp</th>
-                                <th>Retry Result</th>
-                            </tr>
-                            <tr *ngFor="let item of node.state.retry">
-                                <td>{{item.retryCount}}</td>
-                                <td>{{item.timestamp|date:'yyyy MMM dd, HH:mm:ss'}}</td>
-                                <td>
-                                    <pre>{{item.error|json}}</pre>
-                                </td>
-                            </tr>
-                        </table>
-                    </ng-container>
-                </div>
-                <div *ngIf="currentTab === 3">
                     <ng-container *ngIf="node.type!='RESPONSE'">
                         <div class="d-flex align-items-center align-items-stretch mb-1 my-3 ml-1">
                             <div class="w-100 d-flex align-items-center">
@@ -243,6 +202,48 @@
                             </div>
                         </div>
                     </ng-container>
+                </div>
+                <div *ngIf="currentTab === 3">
+                    <ng-container *ngIf="node.state?.headers">
+                        <div class="d-flex align-items-center align-items-stretch mb-1 my-3 ml-1">
+                            <div class="d-flex align-items-center justify-content-between w-100">
+                                <div class="d-flex align-items-center">
+                                    <span class="dsi dsi-object font-16 mr-2 text-primary"></span>
+                                    <span class="fw-600">Headers ({{(node.state?.headers | keyvalue).length}})</span>
+                                </div>
+                                <button type="button" class="btn btn-link btn-sm"
+                                    (click)="toggle['headers']=!toggle['headers']">
+                                    {{toggle['headers'] ? 'Hide':'Show'}} Header
+                                </button>
+                            </div>
+                        </div>
+                        <ng-container *ngIf="toggle['headers']">
+                            <div class="d-flex align-items-center align-items-stretch mb-1"
+                                *ngFor="let item of node.state?.headers | keyvalue">
+                                <div class="px-2 header-key fw-400 font-12 text-secondary">{{item.key}}</div>
+                                <div class="px-2 header-value w-100 fw-400 text-dark">{{maskValue(item.value,item.key)}}
+                                </div>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+            
+                    <ng-container *ngIf="node.state?.retry && node.state?.retry.length > 0">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>Retry Count</th>
+                                <th>Timestamp</th>
+                                <th>Retry Result</th>
+                            </tr>
+                            <tr *ngFor="let item of node.state.retry">
+                                <td>{{item.retryCount}}</td>
+                                <td>{{item.timestamp|date:'yyyy MMM dd, HH:mm:ss'}}</td>
+                                <td>
+                                    <pre>{{item.error|json}}</pre>
+                                </td>
+                            </tr>
+                        </table>
+                    </ng-container>
+                   
                     <ng-container *ngIf="(node.type!='API' || (node.type=='API' && node?.options?.url)) && node.type!='FLOW'">
                         <div class="d-flex align-items-center align-items-stretch mb-1 my-3 ml-1">
                             <div class="w-100 d-flex align-items-center">
