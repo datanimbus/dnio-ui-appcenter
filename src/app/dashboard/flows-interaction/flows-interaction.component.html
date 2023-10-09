@@ -10,11 +10,20 @@
         <span class="fa fa-times mr-2"></span>
         <span class="text">Clear Filters</span>
         </button>
-        <div class="ml-auto mr-2">
-            <span class="mr-2 hover badge badge-success font-12" (click)="filterStatus('Success')">SUCCESS</span>
-            <span class="mr-2 hover badge badge-warning font-12" (click)="filterStatus('Pending')">PENDING</span>
-            <span class="mr-4 hover badge badge-danger font-12" (click)="filterStatus('Error')" >ERROR</span>
-            <span class="mr-3 ml-3">Total Interactions : {{currentRecordsCount}}</span>
+        <div class="ml-auto mr-2 d-flex">
+            <button class="btn btn-white border d-flex align-items-center font-12 mr-2" (click)="filterStatus('Success')">
+                <span class="fa fa-filter font-10 text-success"></span>
+                <span class="ml-1 fw-500 text-success">SUCCESS ({{successCount}})</span>
+            </button>
+            <button class="btn btn-white border d-flex align-items-center font-12 mr-2" (click)="filterStatus('Pending')">
+                <span class="fa fa-filter font-10 text-warning"></span>
+                <span class="ml-1 fw-500 text-warning">PENDING ({{pendingCount}})</span>
+            </button>
+            <button class="btn btn-white border d-flex align-items-center font-12 mr-4" (click)="filterStatus('Error')" >
+                <span class="fa fa-filter font-10 text-danger"></span>
+                <span class="ml-1 fw-500 text-danger">ERROR ({{errorCount}})</span>
+            </button>
+            <span class="d-flex justify-content-center align-items-center mr-3 ml-3">Total Interactions : {{currentRecordsCount}}</span>
         </div>
   
     </div>

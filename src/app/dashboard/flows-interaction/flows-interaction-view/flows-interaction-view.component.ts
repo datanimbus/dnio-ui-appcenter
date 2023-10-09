@@ -119,6 +119,12 @@ export class FlowsInteractionViewComponent implements OnInit {
     return false;
   }
 
+  onNodeChange(value, checkPrevious = false) {
+    const nodeDetails = (checkPrevious ? this.prevNodes : this.nextNodes).find(node => node.name === value);
+    this.selectedNodeId = nodeDetails._id;
+
+  }
+
   get nodeList() {
     let nodes = [];
     if (this.flowData && this.flowData.inputNode) {
@@ -131,5 +137,14 @@ export class FlowsInteractionViewComponent implements OnInit {
       return new Date(a.state._metadata.createdAt).getTime() - new Date(b.state._metadata.createdAt).getTime();
     });
     return nodes;
+  }
+
+  get nextNodes(){
+    const index = this.nodeList.findIndex(e => e._id == this.selectedNodeId)
+    return this.nodeList.slice(index+1)
+  }
+  get prevNodes(){
+    const index = this.nodeList.findIndex(e => e._id == this.selectedNodeId)
+    return this.nodeList.slice(0, index)
   }
 }

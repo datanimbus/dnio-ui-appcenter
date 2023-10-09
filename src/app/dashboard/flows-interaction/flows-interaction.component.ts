@@ -57,6 +57,7 @@ export class FlowsInteractionComponent implements OnInit {
   savedViewSearchTerm: any;
   advanceFilter: boolean;
   breadcrumb: any;
+  currentRecords: any = [];
   constructor(private commonService: CommonService,
     private route: ActivatedRoute,
     private flowsService: FlowsInteractionService,
@@ -489,6 +490,7 @@ export class FlowsInteractionComponent implements OnInit {
         self.showLoading = true;
         self.apiConfig.page = Math.ceil(params.endRow / 30);
         self.subscription['records'] = self.getInteractions(this.flowId).subscribe(records => {
+         self.currentRecords = records || []
           if (params.endRow - 30 < self.currentRecordsCount) {
             let loaded = params.endRow;
             if (loaded > self.currentRecordsCount) {
@@ -550,5 +552,15 @@ export class FlowsInteractionComponent implements OnInit {
     this.apiConfig.filter = {status: type.toUpperCase()};
     this.filterModel =  this.apiConfig.filter
     this.getRecordsCount()
+  }
+
+  get successCount(){
+    return this.currentRecords.filter(ele => ele.status === 'SUCCESS').length
+  }
+  get pendingCount(){
+    return this.currentRecords.filter(ele => ele.status === 'PENDING').length
+  }
+  get errorCount(){
+    return this.currentRecords.filter(ele => ele.status === 'ERROR').length
   }
 }
