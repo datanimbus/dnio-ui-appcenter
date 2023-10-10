@@ -28,7 +28,8 @@ export class FlowNodeViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.completeData = JSON.parse(JSON.stringify(this.node));
-    this.completeData.data = JSON.parse(JSON.stringify(this.node.state));
+    const stringifiedData = JSON.stringify(this.node.state);
+    this.completeData.data = stringifiedData ? JSON.parse(stringifiedData) : {};
     delete this.completeData.onSuccess;
     delete this.completeData.dataStructure;
     if (this.node.type == 'DATASERVICE' && !this.node.options.name) {

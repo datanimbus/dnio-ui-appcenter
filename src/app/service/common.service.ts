@@ -381,9 +381,9 @@ export class CommonService {
     return new Promise((resolve, reject) => {
       self.subscriptions['getAppDetails_' + app._id] = self.get('user', `/data/app/${app._id}`).subscribe(
         (res: any) => {
-          delete res._id;
-          Object.assign(app, res);
-          resolve(res);
+          delete res[0]._id;
+          Object.assign(app, res[0]);
+          resolve(res[0]);
         },
         (err: any) => {
           if (err.status === 404) {
