@@ -23,7 +23,8 @@ export class FlowNodeViewComponent implements OnInit {
     private commonService: CommonService) {
     this.flowData = {};
     this.toggle = {};
-    this.toggle['headers'] = true;
+    this.toggle['requestHeaders'] = false;
+    this.toggle['responseHeaders'] = false;
   }
 
   ngOnInit(): void {
