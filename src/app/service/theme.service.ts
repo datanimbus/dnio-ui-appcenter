@@ -492,7 +492,7 @@ export class Colors {
   dark = '#343a40';
   success = '#28a745';
   danger = '#dc3545';
-  warning = '#ffc107';
+  warning = '#dea807';
   info = '#17a2b8';
   white = '#ffffff';
   inputDisabled = '#cccccc';
@@ -515,7 +515,7 @@ export class Theme {
     temp.push({ color: '#1CAD49', name: 'success', textColor: '#ffffff' });
     temp.push({ color: '#F26464', name: 'danger', textColor: '#ffffff' });
     temp.push({ color: '#17a2b8', name: 'info', textColor: '#ffffff' });
-    temp.push({ color: '#ffc107', name: 'warning', textColor: '#202a36' });
+    temp.push({ color: '#dea807', name: 'warning', textColor: '#202a36' });
     return temp;
   }
 }

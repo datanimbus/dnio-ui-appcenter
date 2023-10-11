@@ -120,8 +120,8 @@ export class FlowsInteractionViewComponent implements OnInit {
   }
 
   onNodeChange(value, checkPrevious = false) {
-    const nodeDetails = (checkPrevious ? this.prevNodes : this.nextNodes).find(node => node.name === value);
-    this.selectedNodeId = nodeDetails._id;
+    // const nodeDetails = (checkPrevious ? this.prevNodes : this.nextNodes).find(node => node.name === value);
+    this.selectedNodeId = value;
 
   }
 
@@ -141,10 +141,10 @@ export class FlowsInteractionViewComponent implements OnInit {
 
   get nextNodes(){
     const index = this.nodeList.findIndex(e => e._id == this.selectedNodeId)
-    return this.nodeList.slice(index+1)
+    return this.nodeList[index+1]
   }
   get prevNodes(){
     const index = this.nodeList.findIndex(e => e._id == this.selectedNodeId)
-    return this.nodeList.slice(0, index)
+    return this.nodeList[index-1]
   }
 }

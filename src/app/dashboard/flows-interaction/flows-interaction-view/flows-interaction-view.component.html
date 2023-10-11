@@ -59,32 +59,32 @@
 
     <div class="bg-white border-top d-flex">
 
-        <div class="p-3 mr-auto" *ngIf="prevNodes.length > 0">
-            <span class="font-11 fw-500 text-secondary">Previous Node(s)</span>
-            <div class="d-flex" *ngIf="prevNodes.length <=2">
-                <span class="fw-600 text-primary hover mr-3" *ngFor="let node of prevNodes"
-                    (click)="onNodeChange(node.name, true)">{{node.name || ''}}</span>
+        <div class="p-3 mr-auto" *ngIf="prevNodes">
+            <span class="font-11 fw-500 text-secondary">Previous Node</span>
+            <div class="d-flex" >
+                <span class="fw-600 text-primary hover mr-3"
+                    (click)="onNodeChange(prevNodes._id, true)">{{prevNodes.name || ''}}</span>
             </div>
-            <div class="d-flex" *ngIf="prevNodes.length > 2">
+            <!-- <div class="d-flex" *ngIf="prevNodes.length > 2">
                 <select class="form-control" (change)="onNodeChange($event.target.value, true)">
                     <option disabled selected value="">Select next node</option>
                     <option class="fw-600 text-primary" *ngFor="let node of prevNodes">{{node.name || ''}}</option>
                 </select>
-            </div>
+            </div> -->
         </div>
 
-        <div class="p-3 ml-auto" *ngIf="nextNodes.length > 0">
-            <span class="font-11 fw-500 text-secondary">Next Node(s)</span>
-            <div class="d-flex" *ngIf="nextNodes.length <=2">
-                <span class="fw-600 text-primary hover mr-3" *ngFor="let node of nextNodes"
-                    (click)="onNodeChange(node.name)">{{node.name || ''}}</span>
+        <div class="p-3 ml-auto" *ngIf="nextNodes">
+            <span class="font-11 fw-500 text-secondary">Next Node</span>
+            <div class="d-flex" >
+                <span class="fw-600 text-primary hover mr-3"
+                    (click)="onNodeChange(nextNodes._id)">{{nextNodes.name || ''}}</span>
             </div>
-            <div class="d-flex" *ngIf="nextNodes.length > 2">
+            <!-- <div class="d-flex" *ngIf="nextNodes.length > 2">
                 <select class="form-control" (change)="onNodeChange($event.target.value)">
                     <option disabled selected value="">Select next node</option>
                     <option class="fw-600 text-primary" *ngFor="let node of nextNodes">{{node.name || ''}}</option>
                 </select>
-            </div>
+            </div> -->
         </div>
     </div>
 </div>
