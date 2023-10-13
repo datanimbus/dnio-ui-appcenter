@@ -184,7 +184,7 @@ export class FlowNodeViewComponent implements OnInit {
   }
 
   get nodeType(){
-    if(this.node.type === 'CONNECTOR'){
+    if(this.node.type === 'CONNECTOR' && this.node.options.connectorType){
       return this.node.options.connectorType
     }
     return this.node.type
