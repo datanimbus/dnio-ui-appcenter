@@ -183,6 +183,13 @@ export class FlowNodeViewComponent implements OnInit {
     return 'N.A.';
   }
 
+  get nodeType(){
+    if(this.node.type === 'CONNECTOR' && this.node.options.connectorType){
+      return this.node.options.connectorType
+    }
+    return this.node.type
+  }
+
   get duration() {
     if (this.node.state && this.node.state._metadata && this.node.state._metadata.createdAt && this.node.state._metadata.lastUpdated) {
       return this.flowsService.getDuration(this.node.state._metadata.createdAt, this.node.state._metadata.lastUpdated);
