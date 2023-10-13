@@ -118,7 +118,7 @@
             </ng-container>
             <ng-container *ngIf="node.type=='CONNECTOR'">
                 <span class="node-icon dsi dsi-connector"></span>
-                <span class="ml-3 font-11" [ngClass]="{'fw-400 text-grey': true}">Connector</span>
+                <span class="ml-3 font-11" [ngClass]="{'fw-400 text-grey': true}">{{node.options.connectorType}}</span>
             </ng-container>
             <ng-container *ngIf="node.type=='CODEBLOCK'">
                 <span class="node-icon dsi dsi-object"></span>
