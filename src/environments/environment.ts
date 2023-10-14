@@ -1,5 +1,5 @@
 export const environment = {
-  version: '2.7.7',
+  version: '2.8.0',
   production: false,
   url: {
     api: '/api/c',
