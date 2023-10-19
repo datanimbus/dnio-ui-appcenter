@@ -909,6 +909,9 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
       operation: 'POST',
       status: 'Pending'
     };
+    if(this.subscriptions['getNewRecordsCount']){
+      this.subscriptions['getNewRecordsCount'].unsubscribe();
+    }
     this.subscriptions['getNewRecordsCount'] = this.commonService
       .get('api', this.workflowApi + '/count', { filter, serviceId: this.srvcId })
       .subscribe(count => {
@@ -921,6 +924,9 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
       operation: 'PUT',
       status: 'Pending'
     };
+    if(this.subscriptions['getUpdatedRecordsCount']){
+      this.subscriptions['getUpdatedRecordsCount'].unsubscribe();
+    }
     this.subscriptions['getUpdatedRecordsCount'] = this.commonService
       .get('api', this.workflowApi + '/count', { filter, serviceId: this.srvcId })
       .subscribe(count => {
@@ -933,6 +939,9 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
       operation: 'DELETE',
       status: 'Pending'
     };
+    if(this.subscriptions['getDeleteRecordsCount']){
+      this.subscriptions['getDeleteRecordsCount'].unsubscribe();
+    }
     this.subscriptions['getDeleteRecordsCount'] = this.commonService
       .get('api', this.workflowApi + '/count', { filter, serviceId: this.srvcId })
       .subscribe(count => {
@@ -944,6 +953,9 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
       serviceId: this.srvcId,
       status: 'Draft'
     };
+    if(this.subscriptions['getDraftRecordsCount']){
+      this.subscriptions['getDraftRecordsCount'].unsubscribe();
+    }
     this.subscriptions['getDraftRecordsCount'] = this.commonService
       .get('api', this.workflowApi + '/count', { filter, serviceId: this.srvcId })
       .subscribe(count => {

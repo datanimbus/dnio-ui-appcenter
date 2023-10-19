@@ -27,6 +27,7 @@ export class SearchBoxComponent implements OnInit, AfterViewInit {
   @Output('reset') reset: EventEmitter<string>;
   @Input('placeholder') placeholder: string;
   @Input('value') value: string;
+  @Input('isMenu') isMenu: boolean = false;
 
   searchTerm: string;
   slideState: string;

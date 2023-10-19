@@ -44,6 +44,7 @@ import { WorkflowListComponent } from './dashboard/dashboard-menu/workflow-list/
 import { BookmarkListComponent } from './dashboard/dashboard-menu/bookmark-list/bookmark-list.component';
 import { IntegrationListComponent } from './dashboard/dashboard-menu/integration-list/integration-list.component';
 import { DashboardService } from './dashboard/dashboard.service';
+import { SearchBoxModule } from './utils/search-box/search-box.module';
 
 // enableProdMode();
 
@@ -61,7 +62,7 @@ import { DashboardService } from './dashboard/dashboard.service';
     ServiceListComponent,
     WorkflowListComponent,
     BookmarkListComponent,
-    IntegrationListComponent,
+    IntegrationListComponent
   ],
   imports: [
     CommonModule,
@@ -89,7 +90,8 @@ import { DashboardService } from './dashboard/dashboard.service';
     AutoFocusModule,
     SortablejsModule.forRoot({ animation: 150 }),
     TruncatedModule,
-    PdfViewerModule
+    PdfViewerModule,
+    SearchBoxModule
   ],
   providers: [
     { provide: ErrorHandler, useClass: ErrorService },
