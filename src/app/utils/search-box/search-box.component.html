@@ -1,9 +1,9 @@
 <div class="search-box position-relative d-flex justify-content-center align-items-center"
-    [ngClass]="{'ignore-outside': ignoreOutside}">
+    [ngClass]="{'ignore-outside': ignoreOutside, 'menu-search': isMenu}">
     <input type="text" name="searchTerm" id="searchTerm" maxlength="40" #searchInput [(ngModel)]="searchTerm"
         (ngModelChange)="onChange($event)" (keyup.enter)="onEnterKey($event)" (keyup.backspace)="onBackspaceKey($event)"
         (focus)="onFocus($event)" (blur)="onBlur($event)" class="form-control"
-        [ngClass]="{'ignore-outside': ignoreOutside}">
+        [ngClass]="{'ignore-outside': ignoreOutside, 'menu-search': isMenu}">
     <div *ngIf="!searchInput.value" [@slide]="slideState" class="position-absolute text-mid-grey"
         [ngClass]="{'ignore-outside': ignoreOutside}" (click)="searchInput.focus()">
         <span class="fas fa-search mr-2" [ngClass]="{'ignore-outside': ignoreOutside}"

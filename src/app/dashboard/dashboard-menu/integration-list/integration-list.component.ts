@@ -4,6 +4,7 @@ import { filter, switchMap } from 'rxjs/operators';
 import { AppService } from 'src/app/service/app.service';
 import { CommonService, GetOptions } from 'src/app/service/common.service';
 import { DashboardService } from '../../dashboard.service';
+import * as _ from 'lodash'
 
 @Component({
   selector: 'odp-integration-list',
@@ -15,6 +16,7 @@ export class IntegrationListComponent implements OnInit {
   subscriptions: any;
   showLazyLoader: boolean;
   records: Array<any>;
+  allRecords: Array<any>;
   activeId: string;
   searchText: string;
   constructor(private appService: AppService,
@@ -73,6 +75,7 @@ export class IntegrationListComponent implements OnInit {
     })).subscribe(res => {
       this.showLazyLoader = false;
       this.records = res;
+      this.allRecords = res;
       // if (!this.activeId) {
       //   this.loadFlowInteractions(null);
       // }
@@ -87,6 +90,24 @@ export class IntegrationListComponent implements OnInit {
       this.appService.partnerId = interactionItem._id;
       this.router.navigate(['/', this.commonService.app._id, 'flow', interactionItem._id]);
     }
+  }
+
+  search(value) {
+    const self = this;
+    if (!value || !value.trim()) {
+      return;
+    }
+    this.searchText = value.trim().toLowerCase();
+    console.log(this.searchText);
+    this.records = this.allRecords.filter(e => e.name.toLowerCase().includes(self.searchText));
+    self.showLazyLoader = true;
+  }
+
+  resetSearch() {
+    const self = this;
+    this.records = _.cloneDeep(this.allRecords);
+    this.searchText = null;
+    self.showLazyLoader = true;
   }
 
 }
