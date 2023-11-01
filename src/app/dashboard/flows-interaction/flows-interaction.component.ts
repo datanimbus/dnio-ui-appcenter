@@ -1,7 +1,8 @@
 import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AgGridColumn, AgGridAngular } from 'ag-grid-angular';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { AgGridAngular } from 'ag-grid-angular';
 import { GridOptions, IDatasource, IGetRowsParams } from 'ag-grid-community';
 import * as moment from 'moment';
 import * as _ from 'lodash'
@@ -10,9 +11,7 @@ import { FileSizePipe } from 'src/app/pipes/file-size.pipe';
 import { CommonService, GetOptions } from 'src/app/service/common.service';
 import { environment } from 'src/environments/environment';
 import { FlowsInteractionService } from './flows-interaction.service';
-import { FloatingFilterComponent } from 'ag-grid-community/dist/lib/components/framework/componentTypes';
 import { FlowsFiltersComponent } from './flows-filters/flows-filters.component';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SessionService } from 'src/app/service/session.service';
 import { AppService } from 'src/app/service/app.service';
 
@@ -67,7 +66,7 @@ export class FlowsInteractionComponent implements OnInit {
     private fb: FormBuilder,
     private sessionService: SessionService,
     public appService: AppService,) {
-    const self=this;
+    const self = this;
     this.interactionList = [];
     this.columnDefs = [];
     // self.savedViews = [];
@@ -81,17 +80,17 @@ export class FlowsInteractionComponent implements OnInit {
       count: 30,
       page: 1
     }
-   }
+  }
 
   ngOnInit(): void {
-    const self=this;
+    const self = this;
     this.route.params.subscribe(params => {
-      this.flowId=params.flowId;
+      this.flowId = params.flowId;
       this.route.data.subscribe(data => {
         if (data.breadcrumb) {
           this.breadcrumb = _.cloneDeep(data.breadcrumb)
-          this.commonService.get('pm', `/${this.commonService.app._id}/flow/`+this.flowId).subscribe(res => {
-            if(this.breadcrumb.length>2){
+          this.commonService.get('pm', `/${this.commonService.app._id}/flow/` + this.flowId).subscribe(res => {
+            if (this.breadcrumb.length > 2) {
               this.breadcrumb.pop();
             }
             this.breadcrumb.push(res.name)
@@ -121,7 +120,7 @@ export class FlowsInteractionComponent implements OnInit {
     }
     const allColumns = this.agGrid.columnApi.getAllColumns();
     this.agGrid.columnApi.setColumnsVisible(allColumns, false);
-    const select=view.select?.split(',');
+    const select = view.select?.split(',');
     select?.forEach((selectItem, index) => {
       const column = allColumns.find(col => {
         const colId = col.getColId();
@@ -129,13 +128,13 @@ export class FlowsInteractionComponent implements OnInit {
       });
       if (!!column) {
         this.agGrid.columnApi.setColumnVisible(column, true);
-        Object.keys(column).forEach(e=>this.agGrid.columnApi.moveColumn(e, index));
+        Object.keys(column).forEach(e => this.agGrid.columnApi.moveColumn(e, index));
       }
     });
 
-    if(view.filter){
-      var filter=[]
-      view.filter?.forEach(e=>{
+    if (view.filter) {
+      var filter = []
+      view.filter?.forEach(e => {
         filter.push(e.filterObject)
       })
       console.log(filter)
@@ -144,7 +143,7 @@ export class FlowsInteractionComponent implements OnInit {
         self.apiConfig.filter = { $and: filter };
         self.filterModel = self.apiConfig.filter;
       } else {
-        this.filterModel=null;
+        this.filterModel = null;
       }
       self.getRecordsCount();
     }
@@ -173,7 +172,7 @@ export class FlowsInteractionComponent implements OnInit {
     this.flowsService?.onFloatingFilterChange(null);
     this.agGrid?.api?.refreshInfiniteCache()
     self.sortModel = null;
-    self.filterModel=null;
+    self.filterModel = null;
     self.flowsService.inlineFilterActive = null;
     self.flowsService.selectedSavedView = null;
     self.apiConfig.sort = '-_metadata.createdAt';
@@ -213,17 +212,17 @@ export class FlowsInteractionComponent implements OnInit {
       ],
       suppressAndOrCondition: true
     };
-    
-    this.columnDefs=[
+
+    this.columnDefs = [
       {
-        field : '_id',
-        headerName : 'ID',
-        sortable : true,
-        filter : 'agTextColumnFilter',
+        field: '_id',
+        headerName: 'ID',
+        sortable: true,
+        filter: 'agTextColumnFilter',
         filterParams: filterOp,
-        resizable : true,
-        suppressMovable : true,
-        cellClass : 'fw-500',
+        resizable: true,
+        suppressMovable: true,
+        cellClass: 'fw-500',
         key: '_id',
         dataKey: '_id',
         type: '_id',
@@ -234,16 +233,22 @@ export class FlowsInteractionComponent implements OnInit {
         dataType: 'text'
       },
       {
-        field : 'headers.data-stack-txn-id',
-        headerName : 'Txn ID',
-        sortable : true,
-        filter : 'agTextColumnFilter',
+        field: 'headers.data-stack-txn-id',
+        headerName: 'Txn ID',
+        sortable: true,
+        filter: 'agTextColumnFilter',
         filterParams: filterOp,
-        resizable : true,
-        suppressMovable : true,
-        width : 360,
-        valueFormatter : (params) => {
-          return params.data?.headers['data-stack-txn-id'] || '';
+        resizable: true,
+        suppressMovable: true,
+        width: 360,
+        valueFormatter: (params) => {
+          if (params.data) {
+            if (params.data.headers && !_.isEmpty(params.data.headers)) {
+              return params.data.headers['data-stack-txn-id'];
+            } else {
+              return params.data.txnId;
+            }
+          }
         },
         key: 'headers.data-stack-txn-id',
         dataKey: 'headers.data-stack-txn-id',
@@ -254,16 +259,22 @@ export class FlowsInteractionComponent implements OnInit {
         dataType: 'text'
       },
       {
-        field : 'headers.data-stack-remote-txn-id',
-        headerName : 'Remote ID',
-        sortable : true,
-        filter : 'agTextColumnFilter',
+        field: 'headers.data-stack-remote-txn-id',
+        headerName: 'Remote ID',
+        sortable: true,
+        filter: 'agTextColumnFilter',
         filterParams: filterOp,
-        resizable : true,
-        suppressMovable : true,
-        width : 360,
-        valueFormatter : (params) => {
-          return params.data?.headers['data-stack-remote-txn-id'] || ''
+        resizable: true,
+        suppressMovable: true,
+        width: 360,
+        valueFormatter: (params) => {
+          if (params.data) {
+            if (params.data.headers && !_.isEmpty(params.data.headers)) {
+              return params.data.headers['data-stack-remote-txn-id'];
+            } else {
+              return params.data.remoteTxnId;
+            }
+          }
         },
         key: 'headers.data-stack-remote-txn-id',
         dataKey: 'headers.data-stack-remote-txn-id',
@@ -274,16 +285,16 @@ export class FlowsInteractionComponent implements OnInit {
         dataType: 'text'
       },
       {
-        field : 'status',
-        headerName : 'Status',
-        sortable : true,
-        filter : 'agTextColumnFilter',
+        field: 'status',
+        headerName: 'Status',
+        sortable: true,
+        filter: 'agTextColumnFilter',
         filterParams: filterOp,
-        resizable : true,
-        suppressMovable : true,
-        width : 140,
-        cellClass : (params) => {
-          if(params.data){
+        resizable: true,
+        suppressMovable: true,
+        width: 140,
+        cellClass: (params) => {
+          if (params.data) {
             return this.getStatusClass(params.data) + ' fw-500';
           }
         },
@@ -296,15 +307,15 @@ export class FlowsInteractionComponent implements OnInit {
         dataType: 'select'
       },
       {
-        field : 'headers.content-type',
-        headerName : 'Payload Type',
-        sortable : true,
-        filter : 'agTextColumnFilter',
+        field: 'headers.content-type',
+        headerName: 'Payload Type',
+        sortable: true,
+        filter: 'agTextColumnFilter',
         filterParams: filterOp,
-        resizable : true,
-        suppressMovable : true,
-        width : 140,
-        valueFormatter : (params) => {
+        resizable: true,
+        suppressMovable: true,
+        width: 140,
+        valueFormatter: (params) => {
           return this.getContentType(params.data?.headers['content-type'] || '');
         },
         key: 'headers.content-type',
@@ -316,15 +327,15 @@ export class FlowsInteractionComponent implements OnInit {
         dataType: 'select'
       },
       {
-        field : 'headers.content-length',
-        headerName : 'Payload Size',
-        sortable : true,
-        filter : 'agTextColumnFilter',
+        field: 'headers.content-length',
+        headerName: 'Payload Size',
+        sortable: true,
+        filter: 'agTextColumnFilter',
         filterParams: filterOp,
-        resizable : true,
-        suppressMovable : true,
-        width : 140,
-        valueFormatter : (params) => {
+        resizable: true,
+        suppressMovable: true,
+        width: 140,
+        valueFormatter: (params) => {
           return this.fileSizePipe.transform(params.data?.headers['content-length'] || '');
         },
         key: 'headers.content-length',
@@ -336,19 +347,20 @@ export class FlowsInteractionComponent implements OnInit {
         dataType: 'select'
       },
       {
-        field : '_metadata.createdAt',
-        headerName : 'Start Time',
-        sortable : true,
-        filter : 'agDateColumnFilter',
-        filterParams: { filterOptions: [
-          'equals', 'greaterThan', 'lessThan', 'inRange'
-        ],
+        field: '_metadata.createdAt',
+        headerName: 'Start Time',
+        sortable: true,
+        filter: 'agDateColumnFilter',
+        filterParams: {
+          filterOptions: [
+            'equals', 'greaterThan', 'lessThan', 'inRange'
+          ],
           suppressAndOrCondition: true
         },
-        resizable : true,
-        suppressMovable : true,
-        valueFormatter : (params) => {
-          return this.datePipe.transform(params.data?._metadata.createdAt, 'yyyy MMM dd, HH:mm:ss')||'';
+        resizable: true,
+        suppressMovable: true,
+        valueFormatter: (params) => {
+          return this.datePipe.transform(params.data?._metadata.createdAt, 'yyyy MMM dd, HH:mm:ss') || '';
         },
         key: '_metadata.createdAt',
         dataKey: '_metadata.createdAt',
@@ -359,15 +371,15 @@ export class FlowsInteractionComponent implements OnInit {
         dataType: 'Date'
       },
       {
-        field : 'duration',
-        headerName : 'Duration',
-        sortable : true,
-        filter : 'agTextColumnFilter',
+        field: 'duration',
+        headerName: 'Duration',
+        sortable: true,
+        filter: 'agTextColumnFilter',
         filterParams: filterOp,
-        resizable : true,
-        suppressMovable : true,
-        valueFormatter : (params) => {
-          return this.getDuration(params.data)||'';
+        resizable: true,
+        suppressMovable: true,
+        valueFormatter: (params) => {
+          return this.getDuration(params.data) || '';
         },
         key: 'duration',
         dataKey: 'duration',
@@ -414,26 +426,26 @@ export class FlowsInteractionComponent implements OnInit {
             } else if (filterModel[key].type == "notEqual") {
               filter.push({ [key]: { $ne: tempData } });
             }
-          }else if(filterModel[key].filterType=='date'){
-            const dateFrom= new Date(filterModel[key].dateFrom)
-            const toDate=new Date(filterModel[key].dateFrom);
+          } else if (filterModel[key].filterType == 'date') {
+            const dateFrom = new Date(filterModel[key].dateFrom)
+            const toDate = new Date(filterModel[key].dateFrom);
             toDate.setDate(toDate.getDate() + 1);
-            const frmDateZone=dateFrom.getTimezoneOffset()
-            const toDateZone=toDate.getTimezoneOffset()
-            dateFrom.setHours(Math.floor(Math.abs(frmDateZone)/60), Math.abs(frmDateZone)%60, 0, 0);
-            toDate.setHours(Math.floor(Math.abs(toDateZone)/60), Math.abs(toDateZone)%60, 0, 0);
+            const frmDateZone = dateFrom.getTimezoneOffset()
+            const toDateZone = toDate.getTimezoneOffset()
+            dateFrom.setHours(Math.floor(Math.abs(frmDateZone) / 60), Math.abs(frmDateZone) % 60, 0, 0);
+            toDate.setHours(Math.floor(Math.abs(toDateZone) / 60), Math.abs(toDateZone) % 60, 0, 0);
             toDate.setMilliseconds(toDate.getMilliseconds() - 1);
-            if(filterModel[key].type=="equals"){
-              filter.push({[key]:{"$gte":dateFrom,"$lte":toDate}});
-            }else if(filterModel[key].type=="greaterThan"){
-              filter.push({[key]:{"$gt":dateFrom}});
-            }else if(filterModel[key].type=="lessThan"){
-              filter.push({[key]:{"$lt":dateFrom}});
-            }else if(filterModel[key].type=="inRange"){
-              const dateTo=new Date(filterModel[key].dateTo)
-              const dateToZone=dateTo.getTimezoneOffset()
-              dateTo.setHours(Math.floor(Math.abs(dateToZone)/60), Math.abs(dateToZone)%60, 0, 0);
-              filter.push({[key]:{"$gte":dateFrom,"$lte":dateTo}});
+            if (filterModel[key].type == "equals") {
+              filter.push({ [key]: { "$gte": dateFrom, "$lte": toDate } });
+            } else if (filterModel[key].type == "greaterThan") {
+              filter.push({ [key]: { "$gt": dateFrom } });
+            } else if (filterModel[key].type == "lessThan") {
+              filter.push({ [key]: { "$lt": dateFrom } });
+            } else if (filterModel[key].type == "inRange") {
+              const dateTo = new Date(filterModel[key].dateTo)
+              const dateToZone = dateTo.getTimezoneOffset()
+              dateTo.setHours(Math.floor(Math.abs(dateToZone) / 60), Math.abs(dateToZone) % 60, 0, 0);
+              filter.push({ [key]: { "$gte": dateFrom, "$lte": dateTo } });
             }
           }
         } catch (e) {
@@ -452,7 +464,7 @@ export class FlowsInteractionComponent implements OnInit {
     }
     self.getRecordsCount()
   }
-  
+
   getInteractions(flowId: string) {
     if (!this.filterModel) {
       delete this.apiConfig.filter
@@ -490,7 +502,7 @@ export class FlowsInteractionComponent implements OnInit {
         self.showLoading = true;
         self.apiConfig.page = Math.ceil(params.endRow / 30);
         self.subscription['records'] = self.getInteractions(this.flowId).subscribe(records => {
-         self.currentRecords = records || []
+          self.currentRecords = records || []
           if (params.endRow - 30 < self.currentRecordsCount) {
             let loaded = params.endRow;
             if (loaded > self.currentRecordsCount) {
@@ -548,19 +560,19 @@ export class FlowsInteractionComponent implements OnInit {
     this.router.navigate([event.data._id], { relativeTo: this.route });
   }
 
-  filterStatus(type){
-    this.apiConfig.filter = {status: type.toUpperCase()};
-    this.filterModel =  this.apiConfig.filter
+  filterStatus(type) {
+    this.apiConfig.filter = { status: type.toUpperCase() };
+    this.filterModel = this.apiConfig.filter
     this.getRecordsCount()
   }
 
-  get successCount(){
+  get successCount() {
     return this.currentRecords.filter(ele => ele.status === 'SUCCESS').length
   }
-  get pendingCount(){
+  get pendingCount() {
     return this.currentRecords.filter(ele => ele.status === 'PENDING').length
   }
-  get errorCount(){
+  get errorCount() {
     return this.currentRecords.filter(ele => ele.status === 'ERROR').length
   }
 }

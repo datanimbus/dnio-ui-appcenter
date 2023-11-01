@@ -79,21 +79,14 @@
             (click)="currentTab = 1">Node Details</div>
     </li>
     <li class="nav-item">
-      <div
-        class="nav-link hover"
-        [ngClass]="{'active text-dark': currentTab === 2, 'text-secondary': currentTab !== 2}"
-        (click)="currentTab = 2"
-        >Request Details</div
-      >
+        <div class="nav-link hover"
+            [ngClass]="{'active text-dark': currentTab === 2, 'text-secondary': currentTab !== 2}"
+            (click)="currentTab = 2">Request Details</div>
     </li>
     <li class="nav-item">
-      <div
-        class="nav-link hover"
-        [ngClass]="{'active text-dark': currentTab === 3, 'text-secondary': currentTab !== 3}"
-        style="border-right: none"
-        (click)="currentTab = 3"
-        >Response Details</div
-      >
+        <div class="nav-link hover"
+            [ngClass]="{'active text-dark': currentTab === 3, 'text-secondary': currentTab !== 3}"
+            style="border-right: none" (click)="currentTab = 3">Response Details</div>
     </li>
 </ul>
 <div class="flow-node-block mb-3 bg-white p-3">
@@ -177,16 +170,20 @@
                         </div>
                         <div class="d-flex align-items-center align-items-stretch mb-1">
                             <div class="px-2 header-key fw-400 font-12 text-secondary">Type</div>
-                            <div class="px-2 header-value w-100 fw-400 text-dark">{{node.state?.payload?.type}}</div>
+                            <div class="px-2 header-value w-100 fw-400 text-dark">
+                                {{incomingData?.metadata?.type}}
+                            </div>
                         </div>
                         <div class="d-flex align-items-center align-items-stretch mb-1">
                             <div class="px-2 header-key fw-400 font-12 text-secondary">Attributes</div>
-                            <div class="px-2 header-value w-100 fw-400 text-dark">{{node.state?.payload?.attributes}}
+                            <div class="px-2 header-value w-100 fw-400 text-dark">
+                                {{incomingData?.metadata?.attributes}}
                             </div>
                         </div>
                         <div class="d-flex align-items-center align-items-stretch mb-1">
                             <div class="px-2 header-key fw-400 font-12 text-secondary">Total Records</div>
-                            <div class="px-2 header-value w-100 fw-400 text-dark">{{node.state?.payload?.totalRecords}}
+                            <div class="px-2 header-value w-100 fw-400 text-dark">
+                                {{incomingData?.metadata?.totalRecords}}
                             </div>
                         </div>
                         <div class="default-loader d-flex justify-content-center w-100 h-100" *ngIf="fetchingData">
@@ -200,26 +197,27 @@
                         <div class="d-flex align-items-center align-items-stretch ml-2 border rounded p-3"
                             *ngIf="toggle['payload']">
                             <div class="w-100">
-                                <pre class="m-0">{{node.state?.body|json}}</pre>
+                                <pre class="m-0">{{incomingData.body|json}}</pre>
                             </div>
                         </div>
                     </ng-container>
-                    <ng-container *ngIf="node.state?.headers">
+                    <ng-container *ngIf="incomingData.headers">
                         <div class="d-flex align-items-center align-items-stretch mb-1 my-3 ml-1">
                             <div class="d-flex align-items-center justify-content-between w-100">
                                 <div class="d-flex align-items-center">
                                     <span class="dsi dsi-object font-16 mr-2 text-primary"></span>
-                                    <span class="fw-600">Headers ({{(node.state?.headers | keyvalue).length}})</span>
+                                    <span class="fw-600">Headers ({{(incomingData.headers | keyvalue).length}})</span>
                                 </div>
-                                <span class="text-link fas fa-sm" [ngClass]="{'fa-chevron-down': !toggle['requestHeaders'], 'fa-chevron-up': toggle['requestHeaders']}"
-                                (click)="toggle['requestHeaders']=!toggle['requestHeaders']">
-                                <!-- {{toggle['headers'] ? 'Hide':'Show'}} Header -->
-                            </span>
+                                <span class="text-link fas fa-sm"
+                                    [ngClass]="{'fa-chevron-down': !toggle['requestHeaders'], 'fa-chevron-up': toggle['requestHeaders']}"
+                                    (click)="toggle['requestHeaders']=!toggle['requestHeaders']">
+                                    <!-- {{toggle['headers'] ? 'Hide':'Show'}} Header -->
+                                </span>
                             </div>
                         </div>
                         <ng-container *ngIf="toggle['requestHeaders']">
                             <div class="d-flex align-items-center align-items-stretch mb-1"
-                                *ngFor="let item of node.state?.headers | keyvalue">
+                                *ngFor="let item of incomingData.headers | keyvalue">
                                 <div class="px-2 header-key fw-400 font-12 text-secondary">{{item.key}}</div>
                                 <div class="px-2 header-value w-100 fw-400 text-dark">{{maskValue(item.value,item.key)}}
                                 </div>
@@ -227,7 +225,7 @@
                         </ng-container>
                     </ng-container>
                 </div>
-                <div *ngIf="currentTab === 3">            
+                <div *ngIf="currentTab === 3">
                     <ng-container *ngIf="node.state?.retry && node.state?.retry.length > 0">
                         <table class="table table-bordered">
                             <tr>
@@ -244,8 +242,9 @@
                             </tr>
                         </table>
                     </ng-container>
-                   
-                    <ng-container *ngIf="(node.type!='API' || (node.type=='API' && node?.options?.url)) && node.type!='FLOW'">
+
+                    <ng-container
+                        *ngIf="(node.type!='API' || (node.type=='API' && node?.options?.url)) && node.type!='FLOW'">
                         <div class="d-flex align-items-center align-items-stretch mb-1 my-3 ml-1">
                             <div class="w-100 d-flex align-items-center">
                                 <span class="dsi dsi-object font-16 mr-2 text-primary"></span>
@@ -263,24 +262,24 @@
                         <div class="d-flex align-items-center align-items-stretch mb-1">
                             <div class="px-2 header-key fw-400 font-12 text-secondary">Type</div>
                             <div class="px-2 header-value w-100 fw-400 text-dark">
-                                {{node.state?.responseData?.type}}
+                                {{outgoingData?.metadata?.type}}
                             </div>
                         </div>
                         <div class="d-flex align-items-center align-items-stretch mb-1">
                             <div class="px-2 header-key fw-400 font-12 text-secondary">Attributes</div>
                             <div class="px-2 header-value w-100 fw-400 text-dark">
-                                {{node.state?.responseData?.attributes}}</div>
+                                {{outgoingData?.metadata?.attributes}}</div>
                         </div>
                         <div class="d-flex align-items-center align-items-stretch mb-1">
                             <div class="px-2 header-key fw-400 font-12 text-secondary">Total Records</div>
                             <div class="px-2 header-value w-100 fw-400 text-dark">
-                                {{node.state?.responseData?.totalRecords}}
+                                {{outgoingData?.metadata?.totalRecords}}
                             </div>
                         </div>
                         <div class="d-flex align-items-center align-items-stretch ml-2 border rounded p-3"
                             *ngIf="toggle['responseBody']">
                             <div class="w-100">
-                                <pre class="m-0">{{node.state?.responseBody|json}}</pre>
+                                <pre class="m-0">{{outgoingData.body|json}}</pre>
                             </div>
                         </div>
                     </ng-container>
@@ -303,18 +302,18 @@
                         <div class="d-flex align-items-center align-items-stretch mb-1">
                             <div class="px-2 header-key fw-400 font-12 text-secondary">Type</div>
                             <div class="px-2 header-value w-100 fw-400 text-dark">
-                                {{node.state?.responseData?.type}}
+                                {{outgoingData?.metadata?.type}}
                             </div>
                         </div>
                         <div class="d-flex align-items-center align-items-stretch mb-1">
                             <div class="px-2 header-key fw-400 font-12 text-secondary">Attributes</div>
                             <div class="px-2 header-value w-100 fw-400 text-dark">
-                                {{node.state?.responseData?.attributes}}</div>
+                                {{outgoingData?.metadata?.attributes}}</div>
                         </div>
                         <div class="d-flex align-items-center align-items-stretch mb-1">
                             <div class="px-2 header-key fw-400 font-12 text-secondary">Total Records</div>
                             <div class="px-2 header-value w-100 fw-400 text-dark">
-                                {{node.state?.responseData?.totalRecords}}
+                                {{outgoingData?.metadata?.totalRecords}}
                             </div>
                         </div>
                         <div *ngIf="!node.options.multipleRequests"
@@ -338,7 +337,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let item of node.state.responseBody;let i=index">
+                                    <tr *ngFor="let item of outgoingData.body;let i=index">
                                         <td>{{i+1}}</td>
                                         <td>{{item.statusCode}}</td>
                                         <td>
@@ -354,7 +353,7 @@
                                             </a>
                                         </td>
                                     </tr>
-                                    <tr *ngIf="!node.state.responseBody || node.state.responseBody.length==0">
+                                    <tr *ngIf="!outgoingData.body || outgoingData.body.length==0">
                                         <td colspan="3">No Response to Show</td>
                                     </tr>
                                 </tbody>
@@ -364,7 +363,7 @@
                             <div class="d-flex align-items-center align-items-stretch ml-2 border rounded p-3"
                                 *ngIf="toggle['responseBody']">
                                 <div class="w-100">
-                                    <pre class="m-0">{{node.state?.responseBody|json}}</pre>
+                                    <pre class="m-0">{{outgoingData.body|json}}</pre>
                                 </div>
                             </div>
                         </ng-container>
@@ -374,9 +373,10 @@
                             <div class="d-flex align-items-center justify-content-between w-100">
                                 <div class="d-flex align-items-center">
                                     <span class="dsi dsi-object font-16 mr-2 text-primary"></span>
-                                    <span class="fw-600">Headers ({{(node.state?.headers | keyvalue).length}})</span>
+                                    <span class="fw-600">Headers ({{(outgoingData.headers| keyvalue).length}})</span>
                                 </div>
-                                <span class="text-link fas fa-sm" [ngClass]="{'fa-chevron-down': !toggle['responseHeaders'], 'fa-chevron-up': toggle['responseHeaders']}"
+                                <span class="text-link fas fa-sm"
+                                    [ngClass]="{'fa-chevron-down': !toggle['responseHeaders'], 'fa-chevron-up': toggle['responseHeaders']}"
                                     (click)="toggle['responseHeaders']=!toggle['responseHeaders']">
                                     <!-- {{toggle['headers'] ? 'Hide':'Show'}} Header -->
                                 </span>
@@ -384,7 +384,7 @@
                         </div>
                         <ng-container *ngIf="toggle['responseHeaders']">
                             <div class="d-flex align-items-center align-items-stretch mb-1"
-                                *ngFor="let item of node.state?.headers | keyvalue">
+                                *ngFor="let item of outgoingData.headers| keyvalue">
                                 <div class="px-2 header-key fw-400 font-12 text-secondary">{{item.key}}</div>
                                 <div class="px-2 header-value w-100 fw-400 text-dark">{{maskValue(item.value,item.key)}}
                                 </div>

@@ -17,7 +17,9 @@ export class FlowsInteractionViewComponent implements OnInit {
   flowData: any;
   interactionStateList: Array<any>;
   selectedNodeId: string;
-  breadcrumb: Array<any>
+  breadcrumb: Array<any>;
+  txnId: string;
+  remoteTxnId: string;
   constructor(private commonService: CommonService,
     private route: ActivatedRoute,
     private flowsService: FlowsInteractionService) {
@@ -31,12 +33,12 @@ export class FlowsInteractionViewComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.route.data.subscribe(data => {
         if (data.breadcrumb) {
-            this.breadcrumb = _.cloneDeep(data.breadcrumb)
-            this.commonService.get('pm', `/${this.commonService.app._id}/flow/`+params.flowId).subscribe(res => {
-              this.breadcrumb.push(res.name)
-              this.breadcrumb.push(params.interactionId)
-              this.commonService.breadcrumbPush(this.breadcrumb)
-            })
+          this.breadcrumb = _.cloneDeep(data.breadcrumb)
+          this.commonService.get('pm', `/${this.commonService.app._id}/flow/` + params.flowId).subscribe(res => {
+            this.breadcrumb.push(res.name)
+            this.breadcrumb.push(params.interactionId)
+            this.commonService.breadcrumbPush(this.breadcrumb)
+          })
         }
       })
       this.getInteractions(params);
@@ -49,9 +51,18 @@ export class FlowsInteractionViewComponent implements OnInit {
       this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${params.flowId}/${params.interactionId}/state`),
       this.commonService.get('pm', `/${this.commonService.app._id}/flow/${params.flowId}`)
     ]).subscribe(res => {
-      this.interactionData = res[0]
+      this.interactionData = res[0];
       this.interactionStateList = res[1];
       this.flowData = res[2];
+
+      if (this.interactionData.headers && !_.isEmpty(this.interactionData.headers)) {
+        this.txnId = this.interactionData.headers['data-stack-txn-id'];
+        this.remoteTxnId = this.interactionData.headers['data-stack-remote-txn-id'];
+      } else {
+        this.txnId = this.interactionData.txnId;
+        this.remoteTxnId = this.interactionData.remoteTxnId;
+      }
+
       this.selectedNodeId = this.flowData.inputNode._id;
       if (!environment.production) {
         console.log(res);
@@ -139,12 +150,12 @@ export class FlowsInteractionViewComponent implements OnInit {
     return nodes;
   }
 
-  get nextNodes(){
+  get nextNodes() {
     const index = this.nodeList.findIndex(e => e._id == this.selectedNodeId)
-    return this.nodeList[index+1]
+    return this.nodeList[index + 1]
   }
-  get prevNodes(){
+  get prevNodes() {
     const index = this.nodeList.findIndex(e => e._id == this.selectedNodeId)
-    return this.nodeList[index-1]
+    return this.nodeList[index - 1]
   }
 }
