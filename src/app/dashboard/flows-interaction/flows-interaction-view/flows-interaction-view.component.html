@@ -14,11 +14,11 @@
     <div class="header p-3 d-flex align-items-center justify-content-between bg-white rounded my-3">
         <div class="d-flex flex-column align-items-start font-13 mr-3">
             <span class="font-11 fw-500 text-secondary mr-1">Remote Txn ID</span>
-            <span class="font-12 fw-500 text-dark">{{interactionData?.headers['data-stack-remote-txn-id']}}</span>
+            <span class="font-12 fw-500 text-dark">{{txnId}}</span>
         </div>
         <div class="d-flex flex-column align-items-start font-13 mr-3">
             <span class="font-11 fw-500 text-secondary mr-1">Txn ID</span>
-            <span class="font-12 fw-500 text-dark">{{interactionData?.headers['data-stack-txn-id']}}</span>
+            <span class="font-12 fw-500 text-dark">{{remoteTxnId}}</span>
         </div>
         <div class="d-flex flex-column align-items-start font-13 mr-3">
             <span class="font-11 fw-500 text-secondary mr-1">Start Time</span>
@@ -61,7 +61,7 @@
 
         <div class="p-3 mr-auto" *ngIf="prevNodes">
             <span class="font-11 fw-500 text-secondary">Previous Node</span>
-            <div class="d-flex" >
+            <div class="d-flex">
                 <span class="fw-600 text-primary hover mr-3"
                     (click)="onNodeChange(prevNodes._id, true)">{{prevNodes.name || ''}}</span>
             </div>
@@ -75,9 +75,9 @@
 
         <div class="p-3 ml-auto" *ngIf="nextNodes">
             <span class="font-11 fw-500 text-secondary">Next Node</span>
-            <div class="d-flex" >
-                <span class="fw-600 text-primary hover mr-3"
-                    (click)="onNodeChange(nextNodes._id)">{{nextNodes.name || ''}}</span>
+            <div class="d-flex">
+                <span class="fw-600 text-primary hover mr-3" (click)="onNodeChange(nextNodes._id)">{{nextNodes.name ||
+                    ''}}</span>
             </div>
             <!-- <div class="d-flex" *ngIf="nextNodes.length > 2">
                 <select class="form-control" (change)="onNodeChange($event.target.value)">
@@ -118,7 +118,8 @@
             </ng-container>
             <ng-container *ngIf="node.type=='CONNECTOR'">
                 <span class="node-icon dsi dsi-connector"></span>
-                <span class="ml-3 font-11" [ngClass]="{'fw-400 text-grey': true}">{{node.options.connectorType || node.type}}</span>
+                <span class="ml-3 font-11" [ngClass]="{'fw-400 text-grey': true}">{{node.options.connectorType ||
+                    node.type}}</span>
             </ng-container>
             <ng-container *ngIf="node.type=='CODEBLOCK'">
                 <span class="node-icon dsi dsi-object"></span>

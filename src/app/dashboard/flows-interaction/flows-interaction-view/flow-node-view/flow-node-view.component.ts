@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as moment from 'moment';
+import * as _ from 'lodash';
 
 import { AppService } from 'src/app/service/app.service';
 import { CommonService } from 'src/app/service/common.service';
@@ -18,6 +19,9 @@ export class FlowNodeViewComponent implements OnInit {
   completeData: any;
   fetchingData: boolean;
   currentTab: number = 1;
+  incomingData: { metadata: any, headers: any, body: any };
+  outgoingData: { metadata: any, headers: any, body: any };
+
   constructor(private appService: AppService,
     private flowsService: FlowsInteractionService,
     private commonService: CommonService) {
@@ -25,6 +29,16 @@ export class FlowNodeViewComponent implements OnInit {
     this.toggle = {};
     this.toggle['requestHeaders'] = false;
     this.toggle['responseHeaders'] = false;
+    this.incomingData = {
+      metadata: {},
+      headers: {},
+      body: {}
+    };
+    this.outgoingData = {
+      metadata: {},
+      headers: {},
+      body: {}
+    };
   }
 
   ngOnInit(): void {
@@ -38,6 +52,26 @@ export class FlowNodeViewComponent implements OnInit {
     }
     if (this.node.type == 'RESPONSE') {
       this.node.state.responseData = this.node.state.payload;
+      this.node.state.outgoingDataMeta = this.node.state.incomingDataMeta;
+    }
+
+    if (this.node.state.payload) {
+      this.incomingData.metadata = this.node.state.payload;
+    } else {
+      this.incomingData.metadata = this.node.state.incomingDataMeta;
+    }
+
+    if (this.node.state.responseData) {
+      this.outgoingData.metadata = this.node.state.responseData;
+    } else {
+      this.outgoingData.metadata = this.node.state.outgoingDataMeta;
+    }
+
+    if (this.node.state.headers) {
+      this.outgoingData.headers = this.node.state.headers;
+    }
+    if (this.node.state.requestHeaders) {
+      this.incomingData.headers = this.node.state.requestHeaders;
     }
   }
 
@@ -76,25 +110,42 @@ export class FlowNodeViewComponent implements OnInit {
 
   showPayload() {
     this.toggle['payload'] = !this.toggle['payload'];
-    if (this.toggle['payload'] && !this.node.state.body) {
+    if (this.toggle['payload'] && _.isEmpty(this.incomingData.body)) {
       this.fetchPayload();
     }
   }
 
   showResponseBody() {
     this.toggle['responseBody'] = !this.toggle['responseBody'];
-    if (this.toggle['responseBody'] && !this.node.state.responseBody) {
+    if (this.toggle['responseBody'] && _.isEmpty(this.outgoingData.body)) {
       this.fetchPayload();
     }
   }
 
   fetchPayload() {
     this.fetchingData = true;
-    this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${this.flowData._id}/${this.node.interactionId}/state/${this.node._id}/data`).subscribe(res => {
-      this.node.state.body = res?.body || {};
-      this.node.state.responseBody = res?.responseBody || {};
+    this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${this.flowData._id}/${this.node.interactionId}/state/${this.node._id}/data`).subscribe((res: any) => {
+      if (res.body) {
+        this.incomingData.body = res.body;
+      }
+      if (res.incoming && res.incoming.body) {
+        this.incomingData.body = res.incoming.body;
+      }
+      if (res.incoming && res.incoming.headers) {
+        this.incomingData.headers = res.incoming.headers;
+      }
+
+      if (res.responseBody) {
+        this.outgoingData.body = res.responseBody;
+      }
+      if (res.outgoing && res.outgoing.body) {
+        this.outgoingData.body = res.outgoing.body;
+      }
+      if (res.outgoing && res.outgoing.headers) {
+        this.outgoingData.headers = res.outgoing.headers;
+      }
       if (this.node.type == 'RESPONSE') {
-        this.node.state.responseBody = this.node.state.body;
+        this.outgoingData.body = this.incomingData.body;
       }
       this.fetchingData = false;
     }, err => {
@@ -183,8 +234,8 @@ export class FlowNodeViewComponent implements OnInit {
     return 'N.A.';
   }
 
-  get nodeType(){
-    if(this.node.type === 'CONNECTOR' && this.node.options.connectorType){
+  get nodeType() {
+    if (this.node.type === 'CONNECTOR' && this.node.options.connectorType) {
       return this.node.options.connectorType
     }
     return this.node.type
