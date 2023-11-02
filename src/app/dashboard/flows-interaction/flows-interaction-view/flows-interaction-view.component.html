@@ -76,8 +76,9 @@
         <div class="p-3 ml-auto" *ngIf="nextNodes">
             <span class="font-11 fw-500 text-secondary">Next Node</span>
             <div class="d-flex">
-                <span class="fw-600 text-primary hover mr-3" (click)="onNodeChange(nextNodes._id)">{{nextNodes.name ||
-                    ''}}</span>
+                <span class="fw-600 text-primary hover mr-3" (click)="onNodeChange(nextNodes._id)">
+                    {{nextNodes.name || ''}}
+                </span>
             </div>
             <!-- <div class="d-flex" *ngIf="nextNodes.length > 2">
                 <select class="form-control" (change)="onNodeChange($event.target.value)">
