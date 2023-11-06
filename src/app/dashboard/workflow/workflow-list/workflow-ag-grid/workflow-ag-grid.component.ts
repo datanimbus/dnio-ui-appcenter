@@ -476,6 +476,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
     }
     const selectedNodes = self.agGrid.api.getSelectedNodes();
     const selectedData = selectedNodes.map(node => node.data);
+    this.gridService.draftSelected(selectedNodes)
     self.selectedRecords.emit(selectedData);
   }
   rowDoubleClicked(event) {
@@ -685,9 +686,9 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
     if (audit && audit.id == self.commonService.userDetails._id) {
       return false;
     }
-    if (selectedData.status !== 'Pending') {
-      return false;
-    }
+    // if (selectedData.status !== 'Pending') {
+    //   return false;
+    // }
     if (!this.commonService.canRespondToWF(this.schema, selectedData.checkerStep)) {
       return false;
     }

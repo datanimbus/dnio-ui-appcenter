@@ -178,11 +178,10 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     this.workflowList = [];
     this.selectedDrafts = [];
     this.gridService.selectedDrafts.subscribe(option => {
-      if (option.value) {
-        this.selectedDrafts.push(option.node._id)
-      }
-      if (option.value === false) {
-        this.selectedDrafts = this.selectedDrafts.filter(ele => ele !== option.node._id)
+      if (this.activeTab === 3) {
+        this.selectedDrafts = option.map(node => {
+          return node._id
+        })
       }
     }
     )
@@ -894,9 +893,10 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     this.totalRecords = 0;
     const filter = {
       serviceId: this.srvcId,
+      // status: 'Pending'
     };
     this.subscriptions['getTotalRecords'] = this.commonService
-      .get('api', this.workflowApi + '/count', { filter, serviceId: this.srvcId })
+      .get('api', this.workflowApi + '/count', { filter})
       .subscribe(count => {
         this.loading.serviceDetails = false;
         this.totalRecords = count;
@@ -907,13 +907,12 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     const filter = {
       serviceId: this.srvcId,
       operation: 'POST',
-      status: 'Pending'
     };
-    if(this.subscriptions['getNewRecordsCount']){
+    if (this.subscriptions['getNewRecordsCount']) {
       this.subscriptions['getNewRecordsCount'].unsubscribe();
     }
     this.subscriptions['getNewRecordsCount'] = this.commonService
-      .get('api', this.workflowApi + '/count', { filter, serviceId: this.srvcId })
+      .get('api', this.workflowApi + '/count', { filter })
       .subscribe(count => {
         this.newRecordCount = count;
       });
@@ -922,13 +921,13 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     const filter = {
       serviceId: this.srvcId,
       operation: 'PUT',
-      status: 'Pending'
+      // status: 'Pending'
     };
-    if(this.subscriptions['getUpdatedRecordsCount']){
+    if (this.subscriptions['getUpdatedRecordsCount']) {
       this.subscriptions['getUpdatedRecordsCount'].unsubscribe();
     }
     this.subscriptions['getUpdatedRecordsCount'] = this.commonService
-      .get('api', this.workflowApi + '/count', { filter, serviceId: this.srvcId })
+      .get('api', this.workflowApi + '/count', { filter })
       .subscribe(count => {
         this.updatedRecordCount = count;
       });
@@ -937,13 +936,13 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     const filter = {
       serviceId: this.srvcId,
       operation: 'DELETE',
-      status: 'Pending'
+      // status: 'Pending'
     };
-    if(this.subscriptions['getDeleteRecordsCount']){
+    if (this.subscriptions['getDeleteRecordsCount']) {
       this.subscriptions['getDeleteRecordsCount'].unsubscribe();
     }
     this.subscriptions['getDeleteRecordsCount'] = this.commonService
-      .get('api', this.workflowApi + '/count', { filter, serviceId: this.srvcId })
+      .get('api', this.workflowApi + '/count', { filter })
       .subscribe(count => {
         this.deleteRecordCount = count;
       });
@@ -953,11 +952,11 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
       serviceId: this.srvcId,
       status: 'Draft'
     };
-    if(this.subscriptions['getDraftRecordsCount']){
+    if (this.subscriptions['getDraftRecordsCount']) {
       this.subscriptions['getDraftRecordsCount'].unsubscribe();
     }
     this.subscriptions['getDraftRecordsCount'] = this.commonService
-      .get('api', this.workflowApi + '/count', { filter, serviceId: this.srvcId })
+      .get('api', this.workflowApi + '/count', { filter })
       .subscribe(count => {
         this.draftRecordCount = count;
       });
@@ -1369,6 +1368,23 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
         this.selectedDrafts = []
       }
     );
+  }
+
+  bulkRespond(){
+    const respondModal = this.modalService.open(WorkflowRespondViewComponent, { centered: true, size: 'lg', beforeDismiss: () => false });
+    respondModal.componentInstance.selectedData = this.selectedRows;
+        respondModal.componentInstance.serviceData = this.appService.serviceData;
+        respondModal.result.then( close => {
+          if (close) {
+            this.selectedDrafts = []
+            this.getTotalRecords()
+            this.getCounts();
+          }
+        },
+        dismiss => {
+          this.selectedDrafts = []
+        }
+      );
   }
 
   get hasFilters() {

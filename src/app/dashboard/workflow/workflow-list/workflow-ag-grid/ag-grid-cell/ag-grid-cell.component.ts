@@ -215,9 +215,5 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
 
   onCheckChanged(val) {
     this.params.node.setSelected(val);
-    this.gridService.draftSelected({
-      node: this.params.node.data,
-      value: val
-    })
   }
 }

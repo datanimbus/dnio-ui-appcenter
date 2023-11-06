@@ -15,6 +15,7 @@ export class WorkflowRespondViewComponent implements OnInit {
 
   @Input() title: string;
   @Input() workflowData: any;
+  @Input() selectedData: Array<any>;
   @Input() serviceData: any;
   @Input() actions: Array<string>;
   workflowFilesList: Array<any>;
@@ -24,6 +25,7 @@ export class WorkflowRespondViewComponent implements OnInit {
   showLazyLoader: boolean;
   actionMap: any;
   totalStepsInPage: any;
+  isBulkRespond: boolean = false;
   constructor(public activeModal: NgbActiveModal,
     public commonService: CommonService,
     public ts: ToastrService,
@@ -47,8 +49,13 @@ export class WorkflowRespondViewComponent implements OnInit {
       console.log(this.actions);
       console.log(this.workflowData);
     }
+
+    if (this.selectedData.length > 0) {
+      this.isBulkRespond = true;
+    }
+
     if (!this.title) {
-      this.title = this.workflowData?._id;
+      this.title = this.isBulkRespond ? this.title = 'Bulk respond to ' + this.selectedData.length + ' workflow(s)' : this.workflowData?._id;
     }
     if (!this.actions || this.actions.length == 0) {
       this.actions = ['rework', 'approve', 'reject'];
@@ -114,8 +121,8 @@ export class WorkflowRespondViewComponent implements OnInit {
       action,
       remarks: this.remarks,
       attachments: this.workflowUploadedFiles,
-      ids: Array.isArray(this.workflowData) ? this.workflowData : [this.workflowData._id],
-      ...(this.workflowData.data && {data: this.workflowData.data.new} )
+      ids: this.isBulkRespond ? this.selectedData.map(ele => ele._id) : Array.isArray(this.workflowData) ? this.workflowData : [this.workflowData._id],
+      ...(!this.isBulkRespond && this.workflowData.data && { data: this.workflowData.data.new })
     };
     this.commonService.put('api', `${this.api}/utils/workflow/action`, payload)
       .subscribe((res: any) => {
@@ -227,22 +234,45 @@ export class WorkflowRespondViewComponent implements OnInit {
 
   get canRespond() {
     let audit;
-    if (this.workflowData && this.workflowData.audit) {
-      audit = this.workflowData.audit[this.workflowData.audit.length - 1];
-    }
-    if (this.workflowData.requestedBy == this.commonService.userDetails._id) {
-      return false;
-    }
-    if (audit && audit.id == this.commonService.userDetails._id) {
-      return false;
-    }
-    if (this.workflowData.status !== 'Pending') {
-      return false;
-    }
-    if (!this.commonService.canRespondToWF(this.serviceData, this.workflowData.checkerStep)) {
-      return false;
-    }
+    if (this.isBulkRespond) {
+      if (this.selectedData) {
+        audit = this.selectedData.map(ele => ele.audit[ele.audit.length - 1]);
+      }
 
+      if (this.selectedData.every(ele => ele.requestedBy === this.commonService.userDetails._id)) {
+        return false
+      }
+
+      if (audit.every(ele => ele === this.commonService.userDetails._id)) {
+        return false;
+      }
+      if (this.selectedData.every(ele => ele.status !== 'Pending')) {
+        return false;
+      }
+
+      this.selectedData.forEach(ele => {
+        if (!this.commonService.canRespondToWF(this.serviceData, ele.checkerStep)) {
+          return false;
+        }
+      });
+    }
+    else {
+      if (this.workflowData && this.workflowData.audit) {
+        audit = this.workflowData.audit[this.workflowData.audit.length - 1];
+      }
+      if (this.workflowData.requestedBy == this.commonService.userDetails._id) {
+        return false;
+      }
+      if (audit && audit.id == this.commonService.userDetails._id) {
+        return false;
+      }
+      if (this.workflowData.status !== 'Pending') {
+        return false;
+      }
+      if (!this.commonService.canRespondToWF(this.serviceData, this.workflowData.checkerStep)) {
+        return false;
+      }
+    }
     if (this.serviceData.status !== 'Active') {
       return false;
     }
