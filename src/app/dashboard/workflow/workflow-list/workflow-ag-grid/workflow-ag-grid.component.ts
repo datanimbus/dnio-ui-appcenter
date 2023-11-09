@@ -99,6 +99,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
     self.getRecordsCount(true);
 
     self.appService.workflowTabChange.pipe(distinctUntilChanged()).subscribe(data => {
+      self.filterModified(null)
       self.setOldOrNew();
     });
 
@@ -352,7 +353,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
         }
         return
       }).filter(ele => ele);
-      self.apiConfig.filter.$and = self.wfService.gridFilterModel.workflowTab || 0 === self.appService.workflowTab ? arr : []
+      self.apiConfig.filter.$and =arr;
       self.wfService.gridFilterModel['filter'] = _.cloneDeep(self.apiConfig.filter.$and)
     }
 

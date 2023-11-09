@@ -37,7 +37,7 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
   timezoneValue: string;
   parsedDate: string;
   constructor(
-    private appService: AppService,
+    public appService: AppService,
     private commonService: CommonService,
     private gridService: WorkflowAgGridService,
     private router: Router,
@@ -197,9 +197,9 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
     if (audit && audit.id == self.commonService.userDetails._id) {
       return false;
     }
-    // if (self.data.status !== 'Pending') {
-    //   return false;
-    // }
+    if (!(self.data.status === 'Pending' || self.data.status === 'Draft')) {
+      return false;
+    }
     if (!this.commonService.canRespondToWF(this.appService.serviceData, this.data.checkerStep)) {
       return false;
     }

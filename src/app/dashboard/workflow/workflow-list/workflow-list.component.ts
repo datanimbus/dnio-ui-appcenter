@@ -877,6 +877,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
   selectOperation(activateTab) {
     this.activeTab = activateTab;
     this.appService.workflowTab = activateTab;
+    this.appService.workflowFilter = null;
     this.appService.workflowTabChange.emit(activateTab);
     // this.createColumnDefs();
     this.getTotalRecords();
@@ -893,7 +894,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     this.totalRecords = 0;
     const filter = {
       serviceId: this.srvcId,
-      // status: 'Pending'
+      status: 'Pending'
     };
     this.subscriptions['getTotalRecords'] = this.commonService
       .get('api', this.workflowApi + '/count', { filter})
@@ -907,6 +908,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     const filter = {
       serviceId: this.srvcId,
       operation: 'POST',
+      status: 'Pending'
     };
     if (this.subscriptions['getNewRecordsCount']) {
       this.subscriptions['getNewRecordsCount'].unsubscribe();
@@ -921,7 +923,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     const filter = {
       serviceId: this.srvcId,
       operation: 'PUT',
-      // status: 'Pending'
+      status: 'Pending'
     };
     if (this.subscriptions['getUpdatedRecordsCount']) {
       this.subscriptions['getUpdatedRecordsCount'].unsubscribe();
@@ -936,7 +938,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     const filter = {
       serviceId: this.srvcId,
       operation: 'DELETE',
-      // status: 'Pending'
+      status: 'Pending'
     };
     if (this.subscriptions['getDeleteRecordsCount']) {
       this.subscriptions['getDeleteRecordsCount'].unsubscribe();
@@ -1215,6 +1217,10 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     // return this.selectedRows.filter(e => e._checked).length;
   }
 
+  get checkedPending(){
+    return this.selectedRows.filter(e => e.status === 'Pending').length
+  }
+
   get allCheckedRecordIds() {
     return this.selectedRows.filter(e => e && e._checked).map(x => x._id);
   }
@@ -1270,7 +1276,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     if (audit && audit.id == this.commonService.userDetails._id) {
       return false;
     }
-    if (selectedData && selectedData.status !== 'Pending') {
+    if (selectedData && !(selectedData.status == 'Pending' || selectedData.status == 'Draft')) {
       return false;
     }
     if (!this.commonService.canRespondToWF(this.schema, selectedData.checkerStep)) {
@@ -1352,10 +1358,11 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     const wfData = this.selectedDrafts;
     // wfData.data.new = this.form.value;
     const respondModal = this.modalService.open(WorkflowRespondViewComponent, { centered: true, size: 'lg', beforeDismiss: () => false });
-    respondModal.componentInstance.title = 'Submit Drafts';
+    respondModal.componentInstance.title = 'Bulk respond to '+this.selectedRows.length+' workflows';
     respondModal.componentInstance.workflowData = wfData;
     respondModal.componentInstance.serviceData = this.schema;
-    respondModal.componentInstance.actions = ['submit'];
+    respondModal.componentInstance.selectedData = this.selectedRows;
+    respondModal.componentInstance.actions = this.activeTab===3 ? ['discard', 'submit'] : [];
     respondModal.result.then(
       close => {
         if (close) {
@@ -1366,6 +1373,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
       },
       dismiss => {
         this.selectedDrafts = []
+        this.selectedRows = []
       }
     );
   }
