@@ -102,9 +102,9 @@ export class WorkflowRemarksViewComponent implements OnInit {
     if (audit && audit.id == this.commonService.userDetails._id) {
       return false;
     }
-    if (this.workflowData.status !== 'Pending') {
-      return false;
-    }
+    // if (!(this.workflowData.status === 'Pending' && this.workflowData.status === 'Draft')) {
+    //   return false;
+    // }
     if (!this.commonService.canRespondToWF(this.serviceData, this.workflowData.checkerStep)) {
       return false;
     }

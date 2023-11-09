@@ -161,13 +161,13 @@
                     
                 </div>
                 <div class="d-flex align-items-center">
-                    <p class="text-muted mt-2" *ngIf="allCheckedRecords>0">
-                        {{allCheckedRecords}} of {{pendingRecords}} pending workflows selected.
-                        <span class="text-primary hover" *ngIf="allCheckedRecords!=pendingRecords"
+                    <p class="text-muted mt-2" *ngIf="checkedPending>0">
+                        {{checkedPending}} of {{pendingRecords}} pending workflows selected.
+                        <span class="text-primary hover" *ngIf="checkedPending!=pendingRecords"
                             (click)="checkAll=true">
                             Select all pending instead
                         </span>.
-                        <span class="text-primary hover" *ngIf="allCheckedRecords===pendingRecords"
+                        <span class="text-primary hover" *ngIf="checkedPending===pendingRecords"
                             (click)="checkAll=false">
                             Click here to deselect all
                         </span>.
@@ -183,16 +183,17 @@
                         <label class="m-0">Showing {{loadedRecordsCount}} of {{currentTotalCount}}</label>
                     </div>
 
-                    <button type="button" class="btn btn-primary btn-min-width" id="submitDraft"
-                        *ngIf="activeTab === 3 && selectedDrafts.length > 0" (click)="bulkSubmit()">
-                        <span class="fa fa-arrow-circle-right mr-2"></span>
-                        <span class="text">Submit ({{selectedDrafts.length}})</span>
-                    </button>
-
-                    <button id="respond" type="button" class="btn btn-link ignore-outside" *ngIf="selectedRows.length>0 "
+                    <!-- <button id="respond" type="button" class="btn btn-outline-primary ignore-outside" *ngIf="selectedRows.length>0 && activeTab !==3"
                         (click)="bulkRespond()">
                         <span class="text font-bold ignore-outside">Respond</span>
+                    </button> -->
+
+                    <button type="button" class="btn btn-primary btn-min-width ml-2" id="submitDraft"
+                        *ngIf="selectedRows.length > 0" (click)="bulkSubmit()">
+                        <span class="fa fa-arrow-circle-right mr-2"></span>
+                        <span class="text">Respond ({{selectedRows.length}})</span>
                     </button>
+
                 </div>
             </ng-container>
 

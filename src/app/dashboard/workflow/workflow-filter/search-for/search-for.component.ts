@@ -137,7 +137,7 @@ export class SearchForComponent implements OnInit {
       },
       {
         name: 'Rejected',
-        value: 'rejected'
+        value: 'Rejected'
       }
     ]
       ;

@@ -50,7 +50,7 @@ export class WorkflowRespondViewComponent implements OnInit {
       console.log(this.workflowData);
     }
 
-    if (this.selectedData.length > 0) {
+    if (this.selectedData?.length > 0) {
       this.isBulkRespond = true;
     }
 
@@ -246,7 +246,7 @@ export class WorkflowRespondViewComponent implements OnInit {
       if (audit.every(ele => ele === this.commonService.userDetails._id)) {
         return false;
       }
-      if (this.selectedData.every(ele => ele.status !== 'Pending')) {
+      if (!this.selectedData.every(ele => (ele.status === 'Pending' || ele.status === 'Draft') )) {
         return false;
       }
 
@@ -266,7 +266,7 @@ export class WorkflowRespondViewComponent implements OnInit {
       if (audit && audit.id == this.commonService.userDetails._id) {
         return false;
       }
-      if (this.workflowData.status !== 'Pending') {
+      if (!(this.workflowData.status === 'Pending' || this.workflowData.status === 'Draft')) {
         return false;
       }
       if (!this.commonService.canRespondToWF(this.serviceData, this.workflowData.checkerStep)) {
