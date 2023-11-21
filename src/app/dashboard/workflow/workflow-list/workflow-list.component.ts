@@ -79,9 +79,12 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
   respondView: WorkflowRespondViewComponent;
   @ViewChild('confirmDeleteModal', { static: false })
   confirmDeleteModal: TemplateRef<HTMLElement>;
+  @ViewChild('bulkResponseModal', { static: false })
+  bulkResponseModal: TemplateRef<HTMLElement>;
   @ViewChild('dataContainer', { static: false }) dataContainer: ElementRef;
   @ViewChild('wfFilter') wfFilter: WorkflowFilterComponent;
   confirmDeleteModalRef: NgbModalRef;
+  bulkResponseModalRef: NgbModalRef;
   clearFilterModalRef: NgbModalRef;
   // applySavedView: EventEmitter<any>;
   subscriptions: any;
@@ -136,6 +139,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
   workflowList: Array<any>;
   breadcrumb: Array<any>;
   selectedDrafts: Array<any> = [];
+  bulkRespondData: Array<any> = [];
   constructor(
     private commonService: CommonService,
     private appService: AppService,
@@ -1366,6 +1370,10 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     respondModal.result.then(
       close => {
         if (close) {
+          if(Array.isArray(close.data)){
+            this.bulkRespondData=close.data;
+            this.showResponse()
+          }
           this.selectedDrafts = []
           this.getTotalRecords()
           this.getCounts();
@@ -1393,6 +1401,14 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
           this.selectedDrafts = []
         }
       );
+  }
+
+  showResponse(){
+    this.bulkResponseModalRef = this.modalService.open(this.bulkResponseModal, { centered: true, size: 'lg', beforeDismiss: () => false });
+    this.bulkResponseModalRef.result.then(
+      close => {},
+      dismiss => {}
+    );
   }
 
   get hasFilters() {

@@ -340,3 +340,8 @@
 .no-focus {
   box-shadow: none !important;
 }
+
+.response-body{
+  max-height: 60vh;
+  overflow: auto;
+}
