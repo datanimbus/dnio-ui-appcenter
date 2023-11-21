@@ -131,14 +131,12 @@ export class WorkflowRespondViewComponent implements OnInit {
           console.log(res);
         }
         let temp: any = res.results;
-        if (Array.isArray(res.results)) {
+        if (Array.isArray(res.results) && res.results.length === 1) {
           temp = res.results[0];
         }
-        if (temp.status == 200) {
-          this.ts.success(temp.message);
-        } else {
-          this.ts.warning(temp.message);
-        }
+       if(!Array.isArray(temp)){
+         temp.status == 200 ? this.ts.success(temp.message) : this.ts.warning(temp.message);
+       }
         this.gridService.onRespond()
         this.activeModal.close({ status: 200, data: temp });
       }, err => {

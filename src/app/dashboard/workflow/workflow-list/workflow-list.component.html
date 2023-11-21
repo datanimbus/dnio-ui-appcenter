@@ -233,3 +233,29 @@
                 (click)="confirmDeleteModalRef.close(true)">Yes</button>
         </div>
     </ng-template>
+
+
+    <ng-template #bulkResponseModal>
+        <div class="modal-header border-bottom">
+          <h4 class="modal-title">Bulk Respond Response</h4>
+          <button id="bulkResponseCloseBtn" type="button" class="btn no-focus close" aria-label="Close"
+            (click)="bulkResponseModalRef.close(false)">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body response-body">
+            <div *ngFor="let data of bulkRespondData;let i=index" class="d-flex mb-2 border rounded" [ngClass]="{'text-success border-success':data.status === 200,'text-danger border-danger':data.status === 400, 'text-warning border-warning': !(data.status === 200 || data.status === 400)}">
+                <div class="d-flex flex-column p-2 w-100" >
+                    <span class="d-flex">ID : {{data.id}}</span>
+                    <span class="d-flex">Status : {{data.status}}</span>
+                    <span class="d-flex">Message : {{data.message}}</span>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="modal-footer">
+          <button id="bulkResponseCancelBtn" type="button" class="btn btn-secondary px-4 btn-min-width"
+            (click)="bulkResponseModalRef.close(false)">No</button>
+          <button id="bulkResponseYesBtn" type="button" class="btn btn-danger px-4 btn-min-width"
+            (click)="bulkResponseModalRef.close(true)">Yes</button>
+        </div> -->
+      </ng-template>

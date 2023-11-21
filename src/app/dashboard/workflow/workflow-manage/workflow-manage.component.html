@@ -227,7 +227,7 @@
             </div>
         </div>
     </div>
-    <div *ngIf="canEditDraft" class="d-flex align-items-center px-3 border-bottom bg-white">
+    <div class="d-flex align-items-center px-3 border-bottom bg-white">
         <ng-container *ngFor="let step of wizard;let stepIndex = index">
             <div *ngIf="step.actions && step.actions.length>0 && active[stepIndex]"
                 class="d-flex experience-hooks px-3 align-items-center">
