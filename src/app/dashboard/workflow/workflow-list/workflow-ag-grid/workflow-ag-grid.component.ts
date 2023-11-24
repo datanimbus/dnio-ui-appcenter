@@ -395,6 +395,37 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
 
   getRecords() {
     const self = this;
+    let filterObj = {}
+   const isDuplicate = (obj) =>  {
+    const self = this;
+    return self.apiConfig?.filter?.$and?.some(item => _.isEqual(item, obj));
+  }
+  if (self.appService.workflowTab === 0) {
+     filterObj = {
+      operation: 'POST',
+      status: { $ne: 'Draft' }
+    };
+  } else if (self.appService.workflowTab === 1) {
+     filterObj = {
+      operation: 'PUT'
+    };
+  
+  } else if (self.appService.workflowTab === 2) {
+     filterObj = {
+      operation: 'DELETE'
+    };
+  } else if (self.appService.workflowTab === 3) {
+     filterObj = {
+      status: 'Draft'
+    };
+  }
+
+  if (!isDuplicate(filterObj)) {
+    self.apiConfig.filter = {
+      $and: [filterObj]
+    }
+  }
+
     return self.commonService.get('api', this.workflowApi, self.apiConfig);
   }
   createColumnDefs() {
@@ -493,7 +524,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
   filterModified(event) {
     const self = this;
     const filter = [];
-    const columnIds = self.agGrid.columnApi.getAllColumns().map(e => e.getColId());
+    const columnIds = self.agGrid.columnApi.getAllColumns()?.map(e => e.getColId());
     self.agGrid.columnApi.setColumnsVisible(columnIds, true);
     self.columns.forEach((e, i) => {
       self.agGrid.columnApi.moveColumn(e.dataKey, i);
