@@ -1150,39 +1150,57 @@ export class WorkflowFilterComponent implements OnInit, OnDestroy {
     const self = this;
     self.selectedColOrder = filterVal.columns ? filterVal.columns : [];
   }
-  setTypeFilter(filterVal) {
-    const self = this;
-    self.resetFilter();
-    self.config = filterVal;
-    if (filterVal.filter && filterVal.filter.$and && filterVal.filter.$and.findIndex(e => Object.keys(e)[0] === 'status') > -1) {
-      const statusIndex = filterVal.filter.$and.findIndex(e => Object.keys(e)[0] === 'status');
+  // setTypeFilter(filterVal) {
+  //   const self = this;
+  //   self.resetFilter();
+  //   self.config = filterVal;
+  //   if (filterVal.filter && filterVal.filter.$and && filterVal.filter.$and.findIndex(e => Object.keys(e)[0] === 'status') > -1) {
+  //     const statusIndex = filterVal.filter.$and.findIndex(e => Object.keys(e)[0] === 'status');
 
-      if (filterVal.filter.$and[statusIndex].status.$in.findIndex(e => e === 'Pending') > -1) {
-        self.statusArray.push('Pending');
-        self.filter.submitted = true;
-      }
-      if (filterVal.filter.$and[statusIndex].status.$in.findIndex(e => e === 'Rework') > -1) {
-        self.filter.rework = true;
-        self.statusArray.push('Rework');
-      }
-      if (filterVal.filter.$and[statusIndex].status.$in.findIndex(e => e === 'Discarded') > -1) {
-        self.filter.discard = true;
-        self.statusArray.push('Discarded');
-      }
-      if (filterVal.filter.$and[statusIndex].status.$in.findIndex(e => e === 'Approved') > -1) {
-        self.filter.approved = true;
-        self.statusArray.push('Approved');
-      }
-      if (filterVal.filter.$and[statusIndex].status.$in.findIndex(e => e === 'Rejected') > -1) {
-        self.filter.rejected = true;
-        self.statusArray.push('Rejected');
-      }
-      if (filterVal.filter.$and[statusIndex].status.$in.findIndex(e => e === 'Draft') > -1) {
-        self.filter.draft = true;
-        self.statusArray.push('Rework');
-      }
-    }
-  }
+  //     if (filterVal.filter.$and[statusIndex].status.$in.findIndex(e => e === 'Pending') > -1) {
+  //       self.statusArray.push('Pending');
+  //       self.filter.submitted = true;
+  //     }
+  //     if (filterVal.filter.$and[statusIndex].status.$in.findIndex(e => e === 'Rework') > -1) {
+  //       self.filter.rework = true;
+  //       self.statusArray.push('Rework');
+  //     }
+  //     if (filterVal.filter.$and[statusIndex].status.$in.findIndex(e => e === 'Discarded') > -1) {
+  //       self.filter.discard = true;
+  //       self.statusArray.push('Discarded');
+  //     }
+  //     if (filterVal.filter.$and[statusIndex].status.$in.findIndex(e => e === 'Approved') > -1) {
+  //       self.filter.approved = true;
+  //       self.statusArray.push('Approved');
+  //     }
+  //     if (filterVal.filter.$and[statusIndex].status.$in.findIndex(e => e === 'Rejected') > -1) {
+  //       self.filter.rejected = true;
+  //       self.statusArray.push('Rejected');
+  //     }
+  //     if (filterVal.filter.$and[statusIndex].status.$in.findIndex(e => e === 'Draft') > -1) {
+  //       self.filter.draft = true;
+  //       self.statusArray.push('Rework');
+  //     }
+  //   }
+  // }
+
+  // setTypeFilter(filterVal) {
+  //   const self = this;
+  //   self.resetFilter();
+  //   self.config = filterVal;
+  
+  //   if (filterVal.filter && filterVal.filter.$and) {
+  //     const statusIndex = filterVal.filter.$and.findIndex(e => Object.keys(e)[0] === 'status');
+  //     const statusArray = ['Pending', 'Rework', 'Discarded', 'Approved', 'Rejected', 'Draft'];
+  
+  //     statusArray.forEach(status => {
+  //       if (filterVal.filter.$and[statusIndex].status.$in.includes(status)) {
+  //         self.filter[status.toLowerCase()] = true;
+  //         self.statusArray.push(status);
+  //       }
+  //     });
+  //   }
+  // }
   setSort(filterVal) {
     const self = this;
     if (!filterVal.sort) {

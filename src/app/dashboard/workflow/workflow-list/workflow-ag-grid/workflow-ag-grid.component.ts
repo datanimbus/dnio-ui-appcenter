@@ -99,6 +99,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
     self.getRecordsCount(true);
 
     self.appService.workflowTabChange.pipe(distinctUntilChanged()).subscribe(data => {
+      self.agGrid.api.setFilterModel(null)
       self.filterModified(null)
       self.setOldOrNew();
     });
