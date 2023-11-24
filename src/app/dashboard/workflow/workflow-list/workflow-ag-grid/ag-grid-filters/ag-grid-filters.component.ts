@@ -31,7 +31,6 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
   private relatedDefinition: any;
   private searchOnlyId: boolean;
   col: any;
-  subscriptions: any;
   paths: Array<any>;
   config: any;
   dateFilterType: string;
@@ -49,7 +48,6 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
     private wfService: WorkflowService
   ) {
     const self = this;
-    self.subscriptions = {};
     self.config = {};
     self.element.nativeElement.classList.add('w-100');
     self.element.nativeElement.style.marginTop = '6px';
@@ -85,7 +83,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
       self.definition.value = self.workflowFilter;
     }
     else {
-      self.workflowFilter = self.value
+      self.workflowFilter = self.definition.value
     }
   }
 
