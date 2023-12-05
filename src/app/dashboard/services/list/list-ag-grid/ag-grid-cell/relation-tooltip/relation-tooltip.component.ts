@@ -50,7 +50,7 @@ export class RelationTooltipComponent implements OnInit, ITooltipAngularComp {
           const temp = [];
           properties.relatedViewFields.forEach(element => {
             if (!!element.properties.dataPath) {
-              const val = self.appService.getValue(element.properties.dataPath, self.params.data[self.params.column.colId]);
+              const val = self.appService.getValue(element.properties.dataPath, self.params.data[self.params.column.getUniqueId()]);
               const retVal = self.getValue(val, element.key);
               temp.push(retVal);
             } else {

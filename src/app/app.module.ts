@@ -6,7 +6,6 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrModule } from 'ngx-toastr';
-import { SortablejsModule } from 'ngx-sortablejs';
 import { CookieService } from 'ngx-cookie-service';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 
@@ -88,7 +87,6 @@ import { SearchBoxModule } from './utils/search-box/search-box.module';
     IconsModule,
     ChangePasswordModule,
     AutoFocusModule,
-    SortablejsModule.forRoot({ animation: 150 }),
     TruncatedModule,
     PdfViewerModule,
     SearchBoxModule

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { SortablejsModule } from 'ngx-sortablejs';
 
 import { WorkflowComponent } from 'src/app/dashboard/workflow/workflow.component';
 import { ViewControlModule } from 'src/app/utils/view-control/view-control.module';
@@ -61,7 +60,6 @@ const routes: Routes = [
     DataGridModule,
     RoundCheckModule,
     RadioBtnModule,
-    SortablejsModule,
     DatePickerModule,
     SearchBoxModule,
     TruncatedModule,

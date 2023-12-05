@@ -1,12 +1,22 @@
 /* You can add global styles to this file, and also import other style files */
+
+@use "ag-grid-community/styles" as ag;
+
+
+
 @import "src/assets/scss/bootstrap/_functions.scss";
 @import "src/assets/scss/bootstrap/_variables.scss";
 
-@import "~ag-grid-community/dist/styles/ag-grid.css";
-@import "~ag-grid-community/dist/styles/ag-theme-balham.css";
 
 
 @import "./assets/data-stack-icons/style.scss";
+
+
+
+@include ag.grid-styles((
+  theme: balham,
+  --ag-balham-active-color: $primary,
+));
 
 :root {
   --box-shadow: 0 3px 5px rgba($black, 0.15);

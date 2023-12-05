@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { AgGridColumn } from 'ag-grid-angular';
+import { ColDef} from 'ag-grid-community';
+
 import * as _ from 'lodash';
 
 import { CommonService } from 'src/app/service/common.service';
@@ -17,7 +18,7 @@ export class ErrorRecordsComponent implements OnInit {
   @Input() transfersData: any;
   subscriptions: any;
   apiCalls: any;
-  columnDef: AgGridColumn[];
+  columnDef: ColDef[];
   errorRecords: Array<any>;
   api: string;
   constructor(private commonService: CommonService) {
@@ -94,28 +95,28 @@ export class ErrorRecordsComponent implements OnInit {
   populateMetaColumns() {
     const self = this;
     self.columnDef = [];
-    const col1 = new AgGridColumn();
+    const col1 = {} as ColDef;
     col1.field = 'sNo';
     col1.headerName = 'Sheet Row No.';
     col1.width = 120;
     col1.resizable = true;
-    col1.cellRendererFramework = ValueRendererComponent;
+    col1.cellRenderer = ValueRendererComponent;
     self.columnDef.push(col1);
-    const col2 = new AgGridColumn();
+    const col2 = {} as ColDef;
     col2.field = 'message';
     col2.headerName = 'Error Message';
-    col2.cellRendererFramework = ValueRendererComponent;
+    col2.cellRenderer = ValueRendererComponent;
     col2.width = 240;
     col2.resizable = true;
     self.columnDef.push(col2);
   }
 
-  parseDefinition(definition: any, parentKey?: string, parentName?: string): AgGridColumn[] {
+  parseDefinition(definition: any, parentKey?: string, parentName?: string): ColDef[] {
     const self = this;
-    let columns: AgGridColumn[] = [];
+    let columns: ColDef[] = [];
     if (definition) {
       definition.forEach(def => {
-        const col = new AgGridColumn();
+        const col = {} as ColDef;
         const dataKey = parentKey ? parentKey + '.' + def.key : def.key;
         let dataName;
         if (def.properties.label) {
@@ -132,7 +133,7 @@ export class ErrorRecordsComponent implements OnInit {
         col.refData = def;
         col.width = 200;
         col.resizable = true;
-        col.cellRendererFramework = ValueRendererComponent;
+        col.cellRenderer = ValueRendererComponent;
         if (def.type === 'Object' && !def.properties.schemaFree) {
           columns = columns.concat(self.parseDefinition(def.definition, dataKey, dataName));
         } else {

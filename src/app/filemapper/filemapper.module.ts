@@ -39,10 +39,7 @@ const routes: Routes = [
     DragAndDropModule,
     DataGridModule,
     TruncatedModule,
-    AgGridModule.withComponents([
-      ValueRendererComponent,
-      ResolveCellComponent
-    ]),
+    AgGridModule,
     FieldTypeModule
   ],
   declarations: [

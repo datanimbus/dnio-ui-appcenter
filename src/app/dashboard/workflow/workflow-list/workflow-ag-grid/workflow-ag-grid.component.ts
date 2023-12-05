@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, EventEmitter, Output, ViewChild, TemplateRef, ElementRef, AfterViewInit } from '@angular/core';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ColumnApi, GridApi, IDatasource, IGetRowsParams } from 'ag-grid-community';
-import { AgGridColumn, AgGridAngular } from 'ag-grid-angular';
+import {GridApi, IDatasource, IGetRowsParams, ColDef } from 'ag-grid-community';
+import { AgGridAngular } from 'ag-grid-angular';
 import { map, distinctUntilChanged, tap } from 'rxjs/operators';
 
 import { AgGridFiltersComponent } from './ag-grid-filters/ag-grid-filters.component';
@@ -37,7 +37,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
   @Output() view: EventEmitter<string>;
   clearFilterModalRef: NgbModalRef;
   currentRecordsCountPromise: Promise<any>;
-  columnDefs: AgGridColumn[];
+  columnDefs: any;
   dataSource: IDatasource;
   apiConfig: GetOptions;
   subscription: any;
@@ -48,7 +48,6 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
   noRowsTemplate;
   workflowApi: string;
   gridApi: GridApi;
-  gridColumnApi: ColumnApi;
   constructor(
     private gridService: WorkflowAgGridService,
     private commonService: CommonService,
@@ -116,35 +115,36 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
 
   onReady(event) {
     this.gridApi = event.api;
-    this.gridColumnApi = event.columnApi
+    this.gridApi = event.api
   }
 
 
   toggleColumns(view, dataColumns) {
     const selectedColumns = view.columns || [];
-    const allColumns = this.gridColumnApi.getAllColumns().filter(ele => dataColumns.findIndex(col => col['dataKey'] === ele['colId']) > -1);
+    const allColumns = this.gridApi.getColumns().filter(ele => dataColumns.findIndex(col => col['dataKey'] === ele['colId']) > -1);
 
     // const staticValues = allColumns.filter(ar => !toRemove.find(rm => (rm.name === ar.name && ar.place === rm.place) ))
 
     dataColumns.forEach(ele => {
-      this.gridColumnApi?.hideColumn(ele['dataKey'], true)
+      this.agGrid.api.setColumnVisible(ele['dataKey'], false);
+      // this.gridApi?.hideColumn(ele['dataKey'], true)
     })
 
     if (selectedColumns.length > 0) {
-      this.gridColumnApi?.setColumnVisible('_checkbox', true);
+      this.gridApi?.setColumnVisible('_checkbox', true);
       allColumns.forEach(column => {
         if (column && column['colId']) {
           console.log(column['colId']);
           const boolVal = selectedColumns.findIndex(ele => ele.dataKey === column['colId']) > -1
-          this.gridColumnApi?.setColumnVisible(column['colId'], boolVal);
+          this.gridApi?.setColumnVisible(column['colId'], boolVal);
         }
       })
     }
   }
 
   toggleClear() {
-    const allColumns = this.gridColumnApi.getAllColumns().map(ele => ele.getColId())
-    this.gridColumnApi.setColumnsVisible(allColumns, true)
+    const allColumns = this.gridApi.getColumns().map(ele => ele.getColId())
+    this.gridApi.setColumnsVisible(allColumns, true)
   }
 
   getDatasource() {
@@ -155,11 +155,11 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
         if (!environment.production) {
           console.log('getRows', params);
         }
-        let definitionList = self.agGrid.columnApi
-          .getAllColumns()
+        let definitionList = self.agGrid.api
+          .getColumns()
           .filter(e => e.isVisible())
           .map(e => e.getColDef().refData);
-        const cols = self.agGrid.columnApi.getAllGridColumns();
+        const cols = self.agGrid.api.getAllGridColumns();
         const colToNameFunc = function (col, index) {
           return {
             index,
@@ -432,7 +432,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
   createColumnDefs() {
     const self = this;
     self.columns.forEach((e, i) => {
-      const temp = {} as AgGridColumn;
+      const temp = {} as ColDef;
       if (e.properties) {
         if (e.properties.label) {
           temp.headerName = e.properties.label;
@@ -458,7 +458,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
         temp.headerClass = 'hide-filter-icon';
         temp.resizable = true;
         // temp.pinned = 'right';
-        temp.floatingFilterComponentFramework = AgGridFiltersComponent;
+        temp.floatingFilterComponent = AgGridFiltersComponent;
         temp.colId = e.dataKey
         temp.filterParams = {
           caseSensitive: true,
@@ -470,7 +470,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
         temp.tooltipField = e.dataKey;
         // temp.tooltipComponentFramework = RelationTooltipComponent;
       }
-      temp.cellRendererFramework = AgGridCellComponent;
+      temp.cellRenderer = AgGridCellComponent;
       temp.refData = e;
       temp.hide = !e.show;
       self.columnDefs.push(temp);
@@ -479,7 +479,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
   }
   columnResized(event) {
     const self = this;
-    // const columns = self.agGrid.columnApi.getAllColumns();
+    // const columns = self.agGrid.api.getColumns();
     // self.widthChange.next(columns);
   }
   columnMoved() { }
@@ -489,7 +489,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
   }
   sortChanged(event) {
     const self = this;
-    const sortModel = self.agGrid.api.getSortModel();
+    const sortModel = self.agGrid.api.getColumnState();
     let sort = '';
     if (sortModel) {
       sort = sortModel.map(e => (e.sort === 'asc' ? '' : '-') + e.colId).join(',');
@@ -525,10 +525,10 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
   filterModified(event) {
     const self = this;
     const filter = [];
-    const columnIds = self.agGrid.columnApi.getAllColumns()?.map(e => e.getColId());
-    self.agGrid.columnApi.setColumnsVisible(columnIds, true);
+    const columnIds = self.agGrid.api.getColumns()?.map(e => e.getColId());
+    self.agGrid.api.setColumnsVisible(columnIds, true);
     self.columns.forEach((e, i) => {
-      self.agGrid.columnApi.moveColumn(e.dataKey, i);
+      self.agGrid.api.moveColumn(e.dataKey, i);
     });
     self.filterModel = self.agGrid.api.getFilterModel();
     this.wfService.gridFilterModel['filterModel'] = this.filterModel
@@ -615,7 +615,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
       const sort = [];
       const sortModel = [];
       const workflowColumnIds = ['workflowId', 'requestedBy', 'respondedBy', '_metadata.createdAt', 'status', 'action'];
-      const columnIds = self.agGrid.columnApi.getAllColumns().map(e => e.getColId());
+      const columnIds = self.agGrid.api.getColumns().map(e => e.getColId());
       if (viewModel.select && viewModel.select.split(',').length > 0) {
         let fields = viewModel.select.split(',');
         let prefix = 'data.new.';
@@ -623,15 +623,15 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
           prefix = 'data.old.';
         }
         fields = fields.map(e => prefix + e);
-        self.agGrid.columnApi.setColumnsVisible(columnIds, false);
-        self.agGrid.columnApi.setColumnsVisible(workflowColumnIds, true);
-        self.agGrid.columnApi.setColumnsVisible(fields, true);
-        self.agGrid.columnApi.setColumnVisible('_checkbox', true);
+        self.agGrid.api.setColumnsVisible(columnIds, false);
+        self.agGrid.api.setColumnsVisible(workflowColumnIds, true);
+        self.agGrid.api.setColumnsVisible(fields, true);
+        self.agGrid.api.setColumnVisible('_checkbox', true);
         fields.forEach((key, i) => {
-          self.agGrid.columnApi.moveColumn(key, 5 + i + 1);
+          self.agGrid.api.moveColumn(key, 5 + i + 1);
         });
       } else {
-        self.agGrid.columnApi.setColumnsVisible(columnIds, true);
+        self.agGrid.api.setColumnsVisible(columnIds, true);
       }
 
       if (viewModel.sort && viewModel.sort.length > 0) {
@@ -693,10 +693,10 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
           console.log('Setting Sort Model');
         }
         reload = true;
-        self.agGrid.api.setSortModel(sortModel);
+        self.agGrid.api.applyColumnState(sortModel);
       } else {
         self.apiConfig.sort = '';
-        self.agGrid.api.setSortModel(null);
+        self.agGrid.api.applyColumnState(null);
       }
       if (reload) {
         self.arrangeFilter();
@@ -739,11 +739,11 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
     self.arrangeFilter();
     self.apiConfig.sort = null;
     self.agGrid.api.setFilterModel(null);
-    self.agGrid.api.setSortModel(null);
-    const columnIds = self.agGrid.columnApi.getAllColumns().map(e => e.getColId());
-    self.agGrid.columnApi.setColumnsVisible(columnIds, true);
+    self.agGrid.api.applyColumnState(null);
+    const columnIds = self.agGrid.api.getColumns().map(e => e.getColId());
+    self.agGrid.api.setColumnsVisible(columnIds, true);
     self.columns.forEach((e, i) => {
-      self.agGrid.columnApi.moveColumn(e.dataKey, i);
+      self.agGrid.api.moveColumn(e.dataKey, i);
     });
     self.initRows();
   }

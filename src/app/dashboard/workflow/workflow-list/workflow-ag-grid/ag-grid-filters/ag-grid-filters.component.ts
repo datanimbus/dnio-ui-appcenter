@@ -164,7 +164,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
         close => {
           if (close) {
             self.gridService.selectedSavedView = null;
-            self.params.parentFilterInstance(function (instance: IFilterComp) {
+            self.params.parentFilterInstance(function (instance) {
               (instance as TextFilter).onFloatingFilterChanged('like', temp ? JSON.stringify(temp) : '');
             });
           }
@@ -172,7 +172,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
         dismiss => { }
       );
     } else {
-      self.params.parentFilterInstance(function (instance: IFilterComp) {
+      self.params.parentFilterInstance(function (instance) {
         (instance as TextFilter).onFloatingFilterChanged('like', temp ? JSON.stringify(temp) : '');
       });
     }
@@ -350,7 +350,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
         close => {
           if (close) {
             self.gridService.selectedSavedView = null;
-            self.params.parentFilterInstance(function (instance: IFilterComp) {
+            self.params.parentFilterInstance(function (instance) {
               (instance as TextFilter).onFloatingFilterChanged('like', temp ? JSON.stringify(temp) : '');
             });
           }
@@ -358,7 +358,7 @@ export class AgGridFiltersComponent implements OnInit, IFloatingFilter, AgFramew
         dismiss => { }
       );
     } else {
-      self.params.parentFilterInstance(function (instance: IFilterComp) {
+      self.params.parentFilterInstance(function (instance) {
         (instance as TextFilter).onFloatingFilterChanged('like', temp ? JSON.stringify(temp) : '');
       });
     }

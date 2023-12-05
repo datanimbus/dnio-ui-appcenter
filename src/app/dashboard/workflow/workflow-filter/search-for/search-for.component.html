@@ -4,7 +4,7 @@
     <strong>Search for </strong>
   </div> -->
   <div class="d-flex flex-column align-items-start">
-    <div *ngIf="searchForColumn.length > 0" [sortablejs]="searchForColumn">
+    <div *ngIf="searchForColumn.length > 0">
       <div class="d-flex align-items-center mb-2" *ngFor="let item of searchForColumn; let i = index">
         <!-- <div class="fas fa-bars text-muted mr-2 hover"></div> -->
         <div class="input-group col-name-dd mr-2">

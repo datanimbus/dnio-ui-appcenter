@@ -27,11 +27,7 @@ import { FileViewModule } from 'src/app/utils/file-view/file-view.module';
   imports: [
     CommonModule,
     FormsModule,
-    AgGridModule.withComponents([
-      AgGridFiltersComponent,
-      AgGridCellComponent,
-      RelationTooltipComponent
-    ]),
+    AgGridModule,
     OnChangeModule,
     RoundCheckModule,
     RouterModule,

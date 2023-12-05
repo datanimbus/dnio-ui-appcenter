@@ -118,8 +118,8 @@ export class FlowsInteractionComponent implements OnInit {
     if (!environment.production) {
       console.log('selectSavedView', view);
     }
-    const allColumns = this.agGrid.columnApi.getAllColumns();
-    this.agGrid.columnApi.setColumnsVisible(allColumns, false);
+    const allColumns = this.agGrid.api.getColumns();
+    this.agGrid.api.setColumnsVisible(allColumns, false);
     const select = view.select?.split(',');
     select?.forEach((selectItem, index) => {
       const column = allColumns.find(col => {
@@ -127,8 +127,8 @@ export class FlowsInteractionComponent implements OnInit {
         return selectItem === colId || selectItem.indexOf(colId + '.') === 0;
       });
       if (!!column) {
-        this.agGrid.columnApi.setColumnVisible(column, true);
-        Object.keys(column).forEach(e => this.agGrid.columnApi.moveColumn(e, index));
+        this.agGrid.api.setColumnVisible(column, true);
+        Object.keys(column).forEach(e => this.agGrid.api.moveColumn(e, index));
       }
     });
 
@@ -177,11 +177,11 @@ export class FlowsInteractionComponent implements OnInit {
     self.flowsService.selectedSavedView = null;
     self.apiConfig.sort = '-_metadata.createdAt';
     this.flowsService.setSortModel(self.apiConfig.sort)
-    self.agGrid?.api?.setSortModel(null);
-    const columnIds = self.agGrid?.columnApi?.getAllColumns().map(e => e.getColId());
-    self.agGrid?.columnApi?.setColumnsVisible(columnIds, true);
+    self.agGrid?.api?.applyColumnState(null);
+    const columnIds = self.agGrid?.api?.getColumns().map(e => e.getColId());
+    self.agGrid?.api?.setColumnsVisible(columnIds, true);
     columnIds?.forEach((e, i) => {
-      self.agGrid.columnApi.moveColumn(e, i);
+      self.agGrid.api.moveColumn(e, i);
     });
     self.selectedSavedView = null;
     self.appService.existingFilter = null;
@@ -394,7 +394,7 @@ export class FlowsInteractionComponent implements OnInit {
 
   sortChanged(event) {
     const self = this;
-    const sortModel = self.agGrid?.api?.getSortModel();
+    const sortModel = self.agGrid?.api?.getColumnState();
     console.log(sortModel)
     let sort = '';
     if (sortModel) {
