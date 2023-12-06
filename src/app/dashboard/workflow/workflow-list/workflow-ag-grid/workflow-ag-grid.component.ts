@@ -633,7 +633,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
       } else {
         self.agGrid.api.setColumnsVisible(columnIds, true);
       }
-
+      const sortState = {};
       if (viewModel.sort && viewModel.sort.length > 0) {
         viewModel.sort.split(',').forEach(item => {
           let colId = item;
@@ -643,6 +643,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
             sortOrder = 'desc';
           }
           sortModel.push({ colId, sort: sortOrder });
+          sortState[colId] = sortOrder;
           sort.push(item);
         });
       }
@@ -693,7 +694,7 @@ export class WorkflowAgGridComponent implements OnInit, AfterViewInit {
           console.log('Setting Sort Model');
         }
         reload = true;
-        self.agGrid.api.applyColumnState(sortModel);
+        self.agGrid.api.applyColumnState(sortState);
       } else {
         self.apiConfig.sort = '';
         self.agGrid.api.applyColumnState(null);

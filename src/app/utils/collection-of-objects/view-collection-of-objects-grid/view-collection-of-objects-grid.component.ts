@@ -140,7 +140,8 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
         refData: definition,
         floatingFilter: true,
         minWidth: definition.type === 'Date' ? 162 : 80,
-        width: definition.type === 'Date' ? 162 : 80,
+        // width: definition.type === 'Date' ? 162 : 80,
+        flex: 2,
         onCellClicked: (params) => {
           if (definition.properties.richText || definition.properties.longText) {
             return this.onRowDoubleClick(params)
@@ -170,7 +171,9 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
       {
         headerName: 'Action',
         cellRenderer: 'actionColCellRenderer',
-        maxWidth: 10,
+        // maxWidth: 10,
+        // width: 40,
+        flex: 1,
         suppressToolPanel: true
       }
     ]

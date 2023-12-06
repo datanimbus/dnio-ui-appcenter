@@ -106,6 +106,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           if (!!queryParams.sort) {
             const sortModel = [];
+            const sortState = {}
             if (!self.schema.schemaFree) {
               const sortStr = JSON.parse(queryParams.sort);
               sortStr.split(',').forEach(item => {
@@ -115,9 +116,10 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
                   colId = colId.substr(1, colId.length);
                   sort = 'desc';
                 }
+                sortState[colId] = sort
                 sortModel.push({ colId, sort });
               });
-              this.agGrid.api.applyColumnState(sortModel);
+              this.agGrid.api.applyColumnState(sortState);
               this.gridService.setSortModel(sortModel)
             }
 
@@ -426,6 +428,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       else if (self.schema.schemaFree && viewModel.value.filter) {
         filters.push(JSON.parse(viewModel.value.filter));
       }
+      const sortState = {};
       if (!self.schema.schemaFree && viewModel.sort && viewModel.sort.length > 0) {
         viewModel.sort.forEach(item => {
           if (typeof item.selectedOption === 'string') {
@@ -435,6 +438,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
             colId: item.name,
             sort: item.selectedOption === 1 ? 'asc' : 'desc'
           });
+          sortState[item.name] = item.selectedOption === 1 ? 'asc' : 'desc';
           sort.push((item.selectedOption === 1 ? '' : '-') + item.name);
         });
       }
@@ -466,7 +470,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
           console.log('Setting Sort Model');
         }
         reload = true;
-        self.agGrid.api.applyColumnState(sortModel);
+        self.agGrid.api.applyColumnState(sortState);
         self.gridService.setSortModel(sortModel)
       }
       else if (self.schema.schemaFree && viewModel.value.sort) {

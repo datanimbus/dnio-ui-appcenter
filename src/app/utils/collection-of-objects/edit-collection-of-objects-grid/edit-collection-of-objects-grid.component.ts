@@ -83,7 +83,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   }
 
   get selectedRecordsCount(): number {
-    return !!this.gridApi ? this.gridApi.getSelectedNodes().length : 0;
+    return !!this.gridApi ? this.gridApi.getSelectedNodes()?.length : 0;
   }
 
   get isButtonsRowShown(): boolean {
@@ -403,7 +403,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
         width: definition.type === 'Date' ? 162 : 80,
         floatingFiltersHeight: 40,
         floatingFilter: true,
-        
+        flex: 2,
         onCellClicked: (params) => {
           this.selectedRowIndex = params.rowIndex;
           if (params.value?.filename) {
@@ -454,9 +454,11 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
       const obj = {
         headerName: '',
         cellRenderer: 'actionColCellRenderer',
+        sortable: false,
         pinned: 'right',
         minWidth: 40,
         maxWidth: 40,
+        flex: 1
       }
       columnDefs.push(obj)
     }

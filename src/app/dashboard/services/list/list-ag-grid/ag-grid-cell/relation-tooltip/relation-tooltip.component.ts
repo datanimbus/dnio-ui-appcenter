@@ -27,12 +27,12 @@ export class RelationTooltipComponent implements OnInit, ITooltipAngularComp {
 
   ngOnInit() { }
 
-  agInit(params: ITooltipParams): void {
+  agInit(params): void {
     try {
       const self = this;
       self.params = params;
       self.data = params.api.getDisplayedRowAtIndex(params.rowIndex).data;
-      self.definition = params.colDef.refData;
+      self.definition = params?.colDef?.refData || {};
       self.dataKey = self.definition.dataKey;
       self.getServiceDetails(`/${self.definition.properties.relatedTo}`);
     } catch (e) {

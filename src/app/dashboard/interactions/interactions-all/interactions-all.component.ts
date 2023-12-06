@@ -139,6 +139,7 @@ export class InteractionsAllComponent implements OnInit, OnDestroy {
           setTimeout(() => {
             if (!!queryParams.sort) {
               const sortModel = [];
+              const sortState = {}
               const sortStr = JSON.parse(queryParams.sort)
               sortStr.split(',').forEach(item => {
                 let colId = item;
@@ -147,9 +148,10 @@ export class InteractionsAllComponent implements OnInit, OnDestroy {
                   colId = colId.substr(1, colId.length);
                   sort = 'desc';
                 }
+                sortState[colId] = sort
                 sortModel.push({ colId, sort });
               });
-              this.agGrid.api.applyColumnState(sortModel);
+              this.agGrid.api.applyColumnState(sortState);
             }
             if (!!queryParams.hide) {
               const hide: Array<string> = JSON.parse(queryParams.hide);

@@ -27,7 +27,7 @@
 </div>
 <div>
     <div class="grid-container rounded border my-4" style="height: 500px; ">
-        <ag-grid-angular class="ag-theme-balham" [gridOptions]="gridOptions" [rowData]="rowData" *ngIf="!isEditable">
+        <ag-grid-angular [components]="frameworkComponents" class="ag-theme-balham" [gridOptions]="gridOptions" [rowData]="rowData" *ngIf="!isEditable">
         </ag-grid-angular>
     </div>
 </div>
@@ -48,8 +48,8 @@
             </button>
         </div>
         <div class="grid-container-modal rounded border my-4" style="height: 500px;">
-            <ag-grid-angular class="ag-theme-balham" [gridOptions]="gridOptions" [rowData]="rowData"
->
+            <ag-grid-angular class="ag-theme-balham" [gridOptions]="gridOptions" [rowData]="rowData" [components]="frameworkComponents"
+>   
             </ag-grid-angular>
         </div>
         <div class="d-flex align-items-center justify-content-end mt-auto">

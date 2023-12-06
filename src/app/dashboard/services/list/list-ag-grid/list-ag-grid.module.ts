@@ -16,6 +16,7 @@ import { ListAgGridService } from './list-ag-grid.service';
 import { RelationViewModule } from 'src/app/utils/relation-view/relation-view.module';
 import { UserViewModule } from 'src/app/utils/user-view/user-view.module';
 import { FileViewModule } from 'src/app/utils/file-view/file-view.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,7 @@ import { FileViewModule } from 'src/app/utils/file-view/file-view.module';
     RelationViewModule,
     UserViewModule,
     FileViewModule,
-    NgbModule
+    NgbModule,
   ],
   exports: [ListAgGridComponent],
   providers: [ListAgGridService]
