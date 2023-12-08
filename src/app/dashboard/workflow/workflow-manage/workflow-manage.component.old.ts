@@ -15,7 +15,7 @@ import { WorkflowRespondViewComponent } from 'src/app/utils/workflow-respond-vie
 
 @Component({
   selector: 'odp-workflow-manage',
-  templateUrl: './workflow-manage.component.html',
+  template: '',
   styleUrls: ['./workflow-manage.component.scss']
 })
 export class WorkflowManageComponent implements OnInit, OnDestroy {
