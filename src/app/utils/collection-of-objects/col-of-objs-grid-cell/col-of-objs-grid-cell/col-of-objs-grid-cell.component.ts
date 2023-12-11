@@ -121,7 +121,7 @@ export class ColOfObjsGridCellComponent implements OnInit, AgRendererComponent {
 
   viewItem(event: Event) {
     event.stopPropagation();
-    const allColumns = this.params.columnApi.getAllColumns();
+    const allColumns = this.params.api.getColumns();
     const actionColumn = allColumns.find(col => col.getColDef().headerName === 'Action');
     const crInstances = this.params.api.getCellRendererInstances({ columns: [actionColumn], rowNodes: [this.params.node] });
     if (!!crInstances && !!crInstances.length) {

@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy, ViewChild, TemplateRef, ElementRef } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { AgGridColumn, AgGridAngular } from 'ag-grid-angular';
-import { IDatasource, IGetRowsParams, RowDoubleClickedEvent } from 'ag-grid-community';
+import { AgGridAngular } from 'ag-grid-angular';
+import { IDatasource, IGetRowsParams, ColDef } from 'ag-grid-community';
 import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, debounceTime, filter, take } from 'rxjs/operators';
@@ -28,7 +28,7 @@ export class InteractionsAllComponent implements OnInit, OnDestroy {
   @ViewChild('agGrid') agGrid: AgGridAngular;
   @ViewChild('reDownloadModal') reDownloadModal: TemplateRef<HTMLElement>;
   @ViewChild('dataContainer', { static: false }) dataContainer: ElementRef;
-  columnDefs: Array<AgGridColumn>;
+  columnDefs: Array<ColDef>;
   dataSource: IDatasource;
   totalCountPromise: Promise<any>;
   totalCount: number;
@@ -139,6 +139,7 @@ export class InteractionsAllComponent implements OnInit, OnDestroy {
           setTimeout(() => {
             if (!!queryParams.sort) {
               const sortModel = [];
+              const sortState = {}
               const sortStr = JSON.parse(queryParams.sort)
               sortStr.split(',').forEach(item => {
                 let colId = item;
@@ -147,13 +148,14 @@ export class InteractionsAllComponent implements OnInit, OnDestroy {
                   colId = colId.substr(1, colId.length);
                   sort = 'desc';
                 }
+                sortState[colId] = sort
                 sortModel.push({ colId, sort });
               });
-              this.agGrid.api.setSortModel(sortModel);
+              this.agGrid.api.applyColumnState(sortState);
             }
             if (!!queryParams.hide) {
               const hide: Array<string> = JSON.parse(queryParams.hide);
-              this.agGrid.columnApi.setColumnsVisible(hide, false);
+              this.agGrid.api.setColumnsVisible(hide, false);
             }
           }, 1000);
         }
@@ -360,7 +362,7 @@ export class InteractionsAllComponent implements OnInit, OnDestroy {
   gridReady(event) {
     const self = this;
     if (self.gridState) {
-      self.agGrid.columnApi.setColumnState(self.gridState);
+      self.agGrid.api.applyColumnState(self.gridState);
     }
     if (self.filterModel) {
       self.agGrid.api.setFilterModel(self.filterModel);
@@ -386,7 +388,7 @@ export class InteractionsAllComponent implements OnInit, OnDestroy {
     const self = this;
     const columns = [];
     self.columns.forEach(item => {
-      const col = new AgGridColumn();
+      const col = {} as ColDef;
       col.field = item.key;
       col.headerName = item.label;
       col.width = item.width;
@@ -401,13 +403,13 @@ export class InteractionsAllComponent implements OnInit, OnDestroy {
         }
         if (col.field !== 'duration' && col.field !== '_checkbox') {
           col.filter = 'agTextColumnFilter';
-          col.floatingFilterComponentFramework = InteractionGridFilterComponent;
+          col.floatingFilterComponent = InteractionGridFilterComponent;
         }
         col.suppressMenu = true;
         col.headerClass = 'hide-filter-icon';
         col.suppressMovable = true;
         col.resizable = true;
-        col.cellRendererFramework = InteractionGridCellComponent;
+        col.cellRenderer = InteractionGridCellComponent;
       }
       columns.push(col);
     });
@@ -429,7 +431,7 @@ export class InteractionsAllComponent implements OnInit, OnDestroy {
     const self = this;
     if (this.hasFilterFromUrl) {
       this.clearSort();
-      this.agGrid.columnApi.setColumnsVisible(this.columns.map(c => c.key), true);
+      this.agGrid.api.setColumnsVisible(this.columns.map(c => c.key), true);
     }
     this.hasFilterFromUrl = false;
     self.advanceFilterQuery = null;
@@ -502,7 +504,7 @@ export class InteractionsAllComponent implements OnInit, OnDestroy {
           self.advanceFilterData = filterData.advanceFilterData;
         }
         if (self.gridState) {
-          self.agGrid.columnApi.setColumnState(self.gridState);
+          self.agGrid.api.applyColumnState(self.gridState);
         }
         if (!this.hasFilterFromUrl) {
           if (self.filterModel) {
@@ -568,7 +570,7 @@ export class InteractionsAllComponent implements OnInit, OnDestroy {
 
   sortChanged(event) {
     const self = this;
-    const sortModel = self.agGrid.api.getSortModel();
+    const sortModel = self.agGrid.api.getColumnState();
     let sort = '';
     if (sortModel) {
       sort = sortModel.map(e => (e.sort === 'asc' ? '' : '-') + e.colId).join(',');
@@ -584,7 +586,7 @@ export class InteractionsAllComponent implements OnInit, OnDestroy {
     const self = this;
     self.sortModel = null;
     self.apiConfig.sort = null;
-    self.agGrid.api.setSortModel(null);
+    self.agGrid.api.applyColumnState(null);
   }
 
   filterModified() {
@@ -634,30 +636,30 @@ export class InteractionsAllComponent implements OnInit, OnDestroy {
     self.apiConfig.filter = null;
     self.apiConfig.sort = null;
     self.agGrid.api.setFilterModel(null);
-    self.agGrid.api.setSortModel(null);
-    const columnIds = self.agGrid.columnApi.getAllColumns().map(e => e.getColId());
-    self.agGrid.columnApi.setColumnsVisible(columnIds, true);
+    self.agGrid.api.applyColumnState(null);
+    const columnIds = self.agGrid.api.getColumns().map(e => e.getColId());
+    self.agGrid.api.setColumnsVisible(columnIds, true);
     self.columns.forEach((e, i) => {
-      self.agGrid.columnApi.moveColumn(e.dataKey, i);
+      self.agGrid.api.moveColumn(e.dataKey, i);
     });
   }
 
   columnResized(event) {
     const self = this;
-    const columnState = self.agGrid.columnApi.getColumnState();
+    const columnState = self.agGrid.api.getColumnState();
     self.subject.next(columnState);
   }
 
   columnVisible(event) {
     const self = this;
-    const columnState = self.agGrid.columnApi.getColumnState();
+    const columnState = self.agGrid.api.getColumnState();
     self.subject.next(columnState);
   }
 
   isColumnVisible(key: string) {
     const self = this;
     if (self.agGrid) {
-      return self.agGrid.columnApi.getColumn(key).isVisible();
+      return self.agGrid.api.getColumn(key).isVisible();
     }
     return false;
   }
@@ -665,7 +667,7 @@ export class InteractionsAllComponent implements OnInit, OnDestroy {
   toggleColumn(key: string, value: any) {
     const self = this;
     if (self.agGrid) {
-      self.agGrid.columnApi.setColumnVisible(key, value);
+      self.agGrid.api.setColumnVisible(key, value);
     }
     const hide = this.columns.map(col => col.key).reduce((pv, cv) => {
       if (!this.isColumnVisible(cv)) {

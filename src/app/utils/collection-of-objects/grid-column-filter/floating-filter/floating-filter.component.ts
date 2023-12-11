@@ -65,11 +65,11 @@ export class FloatingFilterComponent implements IFloatingFilter, AgFrameworkComp
   onChange(value) {
     if (this.definition.type === 'Number') {
       if (!!value) {
-        this.params.parentFilterInstance((instance: IFilterComp) => {
+        this.params.parentFilterInstance((instance) => {
           (instance as NumberFilter).onFloatingFilterChanged('equals', +value);
         });
       } else {
-        this.params.parentFilterInstance((instance: IFilterComp) => {
+        this.params.parentFilterInstance((instance) => {
           (instance as NumberFilter).onFloatingFilterChanged(null, null);
         });
       }
@@ -80,11 +80,11 @@ export class FloatingFilterComponent implements IFloatingFilter, AgFrameworkComp
       && !this.definition.properties.email
     ) {
       if (!!value) {
-        this.params.parentFilterInstance((instance: IFilterComp) => {
+        this.params.parentFilterInstance((instance) => {
           (instance as TextFilter).onFloatingFilterChanged('contains', value);
         });
       } else {
-        this.params.parentFilterInstance((instance: IFilterComp) => {
+        this.params.parentFilterInstance((instance) => {
           (instance as TextFilter).onFloatingFilterChanged(null, null);
         });
       }

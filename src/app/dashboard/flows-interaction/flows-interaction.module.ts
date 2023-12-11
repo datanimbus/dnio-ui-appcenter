@@ -12,7 +12,6 @@ import { FlowNodeViewComponent } from './flows-interaction-view/flow-node-view/f
 import { FlowsFiltersComponent } from './flows-filters/flows-filters.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ClickOutsideModule } from 'src/app/directive/click-outside/click-outside.module';
-import { SortablejsModule } from 'ngx-sortablejs';
 import { DatePickerModule } from 'src/app/utils/date-picker/date-picker.module';
 import { DataGridModule } from 'src/app/utils/directives/data-grid/data-grid.module';
 import { RoundCheckModule } from 'src/app/utils/round-check/round-check.module';
@@ -52,7 +51,6 @@ const routes: Routes = [
     NgbModule,
     PipesModule,
     ClickOutsideModule,
-    SortablejsModule,
     DatePickerModule,
     DataGridModule,
     RoundCheckModule,

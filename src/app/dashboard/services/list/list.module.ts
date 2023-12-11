@@ -3,7 +3,6 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { SortablejsModule } from 'ngx-sortablejs';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 import { ListComponent } from 'src/app/dashboard/services/list/list.component';
@@ -46,7 +45,6 @@ const routes: Routes = [
     NgbModule,
     PipesModule,
     ClickOutsideModule,
-    SortablejsModule,
     DatePickerModule,
     DataGridModule,
     RoundCheckModule,

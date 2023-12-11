@@ -20,7 +20,7 @@ export class WorkflowAgGridService {
   }
 
   onRespond() {
-    this.responded.next()
+    this.responded.next(null)
   }
 
   draftSelected(val){

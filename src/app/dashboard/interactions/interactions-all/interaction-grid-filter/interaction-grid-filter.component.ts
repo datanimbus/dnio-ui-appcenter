@@ -57,7 +57,7 @@ export class InteractionGridFilterComponent implements OnInit, IFloatingFilter, 
     self.params = params;
     self.filterModel = params.currentParentModel();
     self.field = params.column.getColDef().field;
-    self.params.parentFilterInstance(function (instance: IFilterComp) {
+    self.params.parentFilterInstance(function (instance) {
       self.filterInstance = (instance as TextFilter);
     });
   }

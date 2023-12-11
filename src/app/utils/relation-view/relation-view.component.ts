@@ -45,7 +45,7 @@ export class RelationViewComponent implements OnInit, OnDestroy {
       self.extractValue(self.data);
       if (!self.searchFieldValue) {
         self.commonService.getService(self.serviceId).then(serviceDef => {
-          self.addSubscription(
+          self.documentId && self.addSubscription(
             self.commonService.get('api', '/' + self.commonService.app._id + serviceDef.api + '/' + self.documentId, { expand: true })
               .subscribe(data => {
                 self.data[self.definition.dataKey] = data;

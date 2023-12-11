@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild, ElementRef, TemplateRef } from '@angular/core';
 import { NgbModalRef, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { AgGridColumn, AgGridAngular } from 'ag-grid-angular';
-import { IDatasource, IGetRowsParams, Column } from 'ag-grid-community';
+import {  AgGridAngular } from 'ag-grid-angular';
+import { IDatasource, IGetRowsParams, Column, ColDef} from 'ag-grid-community';
 import { of, Subject } from 'rxjs';
 import { debounceTime, map, distinctUntilChanged, take, catchError } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -37,7 +37,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
   @Output() recordsInfo: EventEmitter<any>;
   @Output() rightClick: EventEmitter<any>;
   @Output() scroll: EventEmitter<boolean>;
-  columnDefs: AgGridColumn[];
+  columnDefs: ColDef[];
   dataSource: IDatasource;
   widthChange: Subject<any>;
   colWidthPrefId: string;
@@ -106,6 +106,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           if (!!queryParams.sort) {
             const sortModel = [];
+            const sortState = {}
             if (!self.schema.schemaFree) {
               const sortStr = JSON.parse(queryParams.sort);
               sortStr.split(',').forEach(item => {
@@ -115,32 +116,33 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
                   colId = colId.substr(1, colId.length);
                   sort = 'desc';
                 }
+                sortState[colId] = sort
                 sortModel.push({ colId, sort });
               });
-              this.agGrid.api.setSortModel(sortModel);
+              this.agGrid.api.applyColumnState(sortState);
               this.gridService.setSortModel(sortModel)
             }
 
           }
           if (!!queryParams.select) {
             const select = JSON.parse(queryParams.select);
-            const allColumns = this.agGrid.columnApi.getAllColumns();
+            const allColumns = this.agGrid.api.getColumns();
             if (!!select?.length) {
-              this.agGrid.columnApi.setColumnsVisible(allColumns, false);
-              this.agGrid.columnApi.setColumnVisible('_checkbox', true);
+              this.agGrid.api.setColumnsVisible(allColumns, false);
+              this.agGrid.api.setColumnVisible('_checkbox', true);
               select.forEach((selectItem, index) => {
                 const column = allColumns.find(col => {
                   const colId = col.getColId();
                   return selectItem === colId || selectItem.indexOf(colId + '.') === 0;
                 });
                 if (!!column) {
-                  this.agGrid.columnApi.setColumnVisible(column, true);
-                  this.agGrid.columnApi.moveColumn(column, index);
+                  this.agGrid.api.setColumnVisible(column, true);
+                  this.agGrid.api.moveColumn(column, index);
                 }
               });
             } else {
               if (!self.schema.schemaFree || (self.apiConfig && self.apiConfig.project['_id'] != 0)) {
-                this.agGrid.columnApi.setColumnsVisible(allColumns, true);
+                this.agGrid.api.setColumnsVisible(allColumns, true);
               }
             }
           }
@@ -343,7 +345,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
             const widthValues = JSON.parse(colWidth[0].value);
             if (widthValues && widthValues.length > 0) {
               widthValues.forEach(item => {
-                self.agGrid.columnApi.setColumnWidth(item.colId, item.width);
+                self.agGrid.api.setColumnWidth(item.colId, item.width);
               });
             }
           }
@@ -396,23 +398,23 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       const filters = [];
       const sort = [];
       const sortModel = [];
-      const columnIds = self.agGrid.columnApi.getAllColumns().map(e => e.getColId());
+      const columnIds = self.agGrid.api.getColumns().map(e => e.getColId());
       if (viewModel.select && viewModel.select.split(',').length > 0) {
         const fields = viewModel.select.split(',');
-        self.agGrid.columnApi.setColumnsVisible(columnIds, false);
-        self.agGrid.columnApi.setColumnsVisible(fields, true);
-        self.agGrid.columnApi.setColumnVisible('_checkbox', true);
+        self.agGrid.api.setColumnsVisible(columnIds, false);
+        self.agGrid.api.setColumnsVisible(fields, true);
+        self.agGrid.api.setColumnVisible('_checkbox', true);
         fields.forEach((key, i) => {
-          self.agGrid.columnApi.moveColumn(key, i + 1);
+          self.agGrid.api.moveColumn(key, i + 1);
         });
       } else {
-        self.agGrid.columnApi.setColumnsVisible(columnIds, true);
+        self.agGrid.api.setColumnsVisible(columnIds, true);
       }
       if (self.schema.schemaFree && viewModel.value.project) {
         let project = JSON.parse(viewModel.value.project)
         if (project && Object.keys(project).length > 0) {
           if (project['_id'] == 0) {
-            self.agGrid.columnApi.setColumnVisible('_id', false);
+            self.agGrid.api.setColumnVisible('_id', false);
           }
         }
       }
@@ -426,6 +428,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       else if (self.schema.schemaFree && viewModel.value.filter) {
         filters.push(JSON.parse(viewModel.value.filter));
       }
+      const sortState = {};
       if (!self.schema.schemaFree && viewModel.sort && viewModel.sort.length > 0) {
         viewModel.sort.forEach(item => {
           if (typeof item.selectedOption === 'string') {
@@ -435,6 +438,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
             colId: item.name,
             sort: item.selectedOption === 1 ? 'asc' : 'desc'
           });
+          sortState[item.name] = item.selectedOption === 1 ? 'asc' : 'desc';
           sort.push((item.selectedOption === 1 ? '' : '-') + item.name);
         });
       }
@@ -466,7 +470,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
           console.log('Setting Sort Model');
         }
         reload = true;
-        self.agGrid.api.setSortModel(sortModel);
+        self.agGrid.api.applyColumnState(sortState);
         self.gridService.setSortModel(sortModel)
       }
       else if (self.schema.schemaFree && viewModel.value.sort) {
@@ -477,7 +481,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       else {
         self.apiConfig.sort = null;
         this.gridService.setSortModel(self.apiConfig.sort)
-        self.agGrid.api.setSortModel(null);
+        self.agGrid.api.applyColumnState(null);
         self.gridService.setSortModel(sortModel)
       }
       if (self.schema.schemaFree && viewModel.value.project) {
@@ -527,45 +531,48 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
       const temp: any = {};
       if (e.properties) {
         if (e.properties.label) {
-          (temp as AgGridColumn).headerName = e.properties.label;
+          (temp as ColDef).headerName = e.properties.label;
         } else {
-          (temp as AgGridColumn).headerName = e.properties.name;
+          (temp as ColDef).headerName = e.properties.name;
         }
       }
-      (temp as AgGridColumn).field = e.dataKey;
+      (temp as ColDef).field = e.dataKey;
       if (e.type === 'Checkbox') {
-        (temp as AgGridColumn).maxWidth = 60;
-        (temp as AgGridColumn).minWidth = 40;
-        (temp as AgGridColumn).pinned = 'left';
-        (temp as AgGridColumn).headerCheckboxSelection = true;
-        (temp as AgGridColumn).checkboxSelection = true;
+        (temp as ColDef).maxWidth = 60;
+        (temp as ColDef).minWidth = 40;
+        (temp as ColDef).pinned = 'left';
+        (temp as ColDef).headerCheckboxSelection = true;
+        (temp as ColDef).checkboxSelection = true;
 
       } else {
-        (temp as AgGridColumn).sortable = true;
+        (temp as ColDef).sortable = true;
         if (!this.schema.schemaFree) {
-          (temp as AgGridColumn).filter = 'agTextColumnFilter';
-          (temp as AgGridColumn).floatingFilterComponentFramework = AgGridFiltersComponent;
-          (temp as AgGridColumn).filterParams = {
+          (temp as ColDef).filter = 'agTextColumnFilter';
+          (temp as ColDef).floatingFilterComponent = AgGridFiltersComponent;
+          (temp as ColDef).filterParams = {
             caseSensitive: true,
             suppressAndOrCondition: true,
             suppressFilterButton: true
           };
         }
         else {
-          (temp as AgGridColumn).width = 250;
+          (temp as ColDef).width = 250;
         }
-        (temp as AgGridColumn).suppressMenu = true;
-        (temp as AgGridColumn).headerClass = 'hide-filter-icon';
-        (temp as AgGridColumn).resizable = true;
+        (temp as ColDef).suppressMenu = true;
+        (temp as ColDef).headerClass = 'hide-filter-icon';
+        (temp as ColDef).resizable = true;
 
       }
       if (e.type === 'Relation') {
-        (temp as AgGridColumn).tooltipField = e.dataKey;
-        (temp as AgGridColumn).tooltipComponentFramework = RelationTooltipComponent;
+        (temp as ColDef).tooltipField = e.dataKey;
+        (temp as ColDef).tooltipComponent = RelationTooltipComponent;
       }
-      (temp as AgGridColumn).cellRendererFramework = AgGridCellComponent;
-      (temp as AgGridColumn).refData = e;
-      (temp as AgGridColumn).hide = !e.show;
+      if(!this.ListComponent.isSchemaFree){
+        (temp as ColDef).floatingFilter = true
+      }
+      (temp as ColDef).cellRenderer = AgGridCellComponent;
+      (temp as ColDef).refData = e;
+      (temp as ColDef).hide = !e.show;
       this.columnDefs.push(temp);
     });
   }
@@ -590,7 +597,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
 
   sortChanged(event) {
     const self = this;
-    const sortModel = self.agGrid.api.getSortModel();
+    const sortModel = self.agGrid.api.getColumnState();
     let sort = '';
     if (sortModel) {
       sort = sortModel.map(e => (e.sort === 'asc' ? '' : '-') + e.colId).join(',');
@@ -608,7 +615,7 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     self.sortModel = null;
     self.apiConfig.sort = null;
     this.gridService.setSortModel(self.apiConfig.sort)
-    self.agGrid.api.setSortModel(null);
+    self.agGrid.api.applyColumnState(null);
     self.gridService.setSortModel(null)
     this.filterModified(null, null)
     // self.initRows(true);
@@ -675,22 +682,22 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     }
     self.searchView = null;
     self.agGrid.api.setFilterModel(null);
-    self.agGrid.api.setSortModel(null);
+    self.agGrid.api.applyColumnState(null);
     self.gridService.setSortModel(null)
-    const columnIds = self.agGrid.columnApi.getAllColumns().map(e => e.getColId());
+    const columnIds = self.agGrid.api.getColumns().map(e => e.getColId());
     if (self.schema.schemaFree && columnIds[2] == '0') {
       columnIds[2] = 'Data';
     }
-    self.agGrid.columnApi.setColumnsVisible(columnIds, true);
+    self.agGrid.api.setColumnsVisible(columnIds, true);
     self.columns.forEach((e, i) => {
-      self.agGrid.columnApi.moveColumn(e.dataKey, i);
+      self.agGrid.api.moveColumn(e.dataKey, i);
     });
     self.initRows();
   }
 
   columnResized(event) {
     const self = this;
-    const columns = self.agGrid.columnApi.getAllColumns();
+    const columns = self.agGrid.api.getColumns();
     self.widthChange.next(columns);
   }
   columnMoved() {
@@ -698,11 +705,11 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
     if (self.schema.schemaFree) {
       return;
     }
-    let definitionList = self.agGrid.columnApi
-      .getAllColumns()
+    let definitionList = self.agGrid.api
+      .getColumns()
       .filter(e => e.isVisible())
       .map(e => e.getColDef().refData);
-    const cols = self.agGrid.columnApi.getAllGridColumns();
+    const cols = self.agGrid.api.getAllGridColumns();
     const colToNameFunc = function (col, index) {
       return {
         index,
@@ -746,11 +753,11 @@ export class ListAgGridComponent implements OnInit, OnDestroy {
         if (!environment.production) {
           console.log('getRows', params);
         }
-        let definitionList = self.agGrid.columnApi
-          .getAllColumns()
+        let definitionList = self.agGrid.api
+          .getColumns()
           .filter(e => e.isVisible())
           .map(e => e.getColDef().refData);
-        const cols = self.agGrid.columnApi.getAllGridColumns();
+        const cols = self.agGrid.api.getAllGridColumns();
         const colToNameFunc = function (col, index) {
           return {
             index,

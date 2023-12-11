@@ -1,6 +1,6 @@
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { UntypedFormArray, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { GridOptions, ColDef, ColumnApi, GridApi } from 'ag-grid-community';
+import { GridOptions, ColDef, GridApi } from 'ag-grid-community';
 import { Component, OnInit, Input, TemplateRef, ViewChild, OnChanges, SimpleChanges, OnDestroy, Output, EventEmitter } from '@angular/core';
 
 import {
@@ -49,7 +49,6 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   modalOptions: GridOptions;
   definitionList: Array<any> = [];
   gridApi: GridApi;
-  columnApi: ColumnApi;
   tempRowIndex = 0;
   addedIndex = null;
   selectedRowIndex = 0;
@@ -84,7 +83,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   }
 
   get selectedRecordsCount(): number {
-    return !!this.gridApi ? this.gridApi.getSelectedNodes().length : 0;
+    return !!this.gridApi ? this.gridApi.getSelectedNodes()?.length : 0;
   }
 
   get isButtonsRowShown(): boolean {
@@ -353,6 +352,7 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
     }
   }
   private prepareTable() {
+    let columnDefs = []
     this.frameworkComponents = {
       customHeaderRenderer: ColOfObjsHeaderCellComponent,
       customCheckboxCellRenderer: GridCheckboxComponent,
@@ -363,15 +363,8 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
       textEditor: TextEditor
     };
     this.ogRowData = _.cloneDeep(this.rowData)
-    const columnDefs: Array<ColDef> = [
-      // {
-      //   headerName: '#',
-      //   pinned: 'left',
-      //   sortable: false,
-      //   cellRenderer: 'customCheckboxCellRenderer',
-      //   minWidth: 60,
-      //   maxWidth: 60,
-      // },
+     columnDefs = [
+
       ...(
         [{
           headerName: '',
@@ -409,34 +402,8 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
         minWidth: definition.type === 'Date' ? 162 : 80,
         width: definition.type === 'Date' ? 162 : 80,
         floatingFiltersHeight: 40,
-        // editable: () => {
-        //   if (definition.properties.readonly) {
-        //     return false
-        //   }
-        //   if (this.isEditable && (definition.type === 'String' || definition.type === 'Number') && !(definition.properties.richText || definition.properties.longText || definition.properties.password)) {
-        //     return true
-        //   }
-        //   else {
-        //     return false
-        //   }
-        // },
-        // cellEditorSelector: () => {
-        //   if (definition.properties.readonly) {
-        //     return {}
-        //   }
-        //   if (this.isEditable && (definition.type === 'String' || definition.type === 'Number') && !(definition.properties.richText || definition.properties.longText || definition.properties.password)) {
-        //     return { component: 'textEditor' }
-        //   }
-        //   else {
-        //     return {}
-        //   }
-        // },
-
-        // cellEditorParams: {
-        //   type: definition.type,
-        //   formArray: this.formArray,
-        //   path: definition.controlPath
-        // },
+        floatingFilter: true,
+        flex: 2,
         onCellClicked: (params) => {
           this.selectedRowIndex = params.rowIndex;
           if (params.value?.filename) {
@@ -484,13 +451,16 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
     ]
 
     if (!this.isEditable) {
-      columnDefs.push({
+      const obj = {
         headerName: '',
         cellRenderer: 'actionColCellRenderer',
+        sortable: false,
         pinned: 'right',
         minWidth: 40,
         maxWidth: 40,
-      })
+        flex: 1
+      }
+      columnDefs.push(obj)
     }
     this.gridOptions = {
       context: {
@@ -500,9 +470,8 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
       pagination: !this.isEditable,
       // paginationPageSize: AG_GRID_PAGINATION_COUNT,
       animateRows: true,
-      floatingFilter: true,
       onGridReady: this.onGridReady.bind(this),
-      onRowDataChanged: this.autoSizeAllColumns.bind(this),
+      onRowDataUpdated: this.autoSizeAllColumns.bind(this),
       // onGridSizeChanged: this.forceResizeColumns.bind(this),
       onSelectionChanged: this.onSelectionChanged.bind(this),
       suppressRowClickSelection: true,
@@ -531,7 +500,6 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
 
   private onGridReady(event) {
     this.gridApi = event.api;
-    this.columnApi = event.columnApi;
     if (this.gridApi) {
       this.forceResizeColumns()
     }
@@ -574,13 +542,13 @@ export class EditCollectionOfObjectsGridComponent implements OnInit, OnChanges, 
   }
 
   private autoSizeAllColumns() {
-    if (!!this.gridApi && !!this.columnApi) {
+    if (!!this.gridApi ) {
       setTimeout(() => {
         const container = document.querySelector('.grid-container');
         const availableWidth = !!container ? container.clientWidth - 80 : 900;
-        const allColumns = this.columnApi.getAllColumns();
+        const allColumns = this.gridApi.getColumns();
         allColumns.forEach(col => {
-          this.columnApi.autoSizeColumn(col);
+          this.gridApi.autoSizeColumn(col);
           if (col.getActualWidth() > AG_GRID_DEFAULT_COLUMN_WIDTH || this.gridApi.getDisplayedRowCount() === 0) {
             col.setActualWidth(AG_GRID_DEFAULT_COLUMN_WIDTH);
           }

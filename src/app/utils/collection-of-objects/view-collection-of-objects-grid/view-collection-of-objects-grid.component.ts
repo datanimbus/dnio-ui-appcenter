@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { ColDef, ColumnApi, GridApi, GridOptions } from 'ag-grid-community';
+import { ColDef, GridApi, GridOptions } from 'ag-grid-community';
 
 import {
   AG_GRID_FOOTER_HEIGHT,
@@ -30,7 +30,6 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
   gridOptions: GridOptions;
   definitionList: Array<any> = [];
   gridApi: GridApi;
-  columnApi: ColumnApi;
   hasPath: boolean;
   frameworkComponents: any;
   rowData: Array<any>;
@@ -111,13 +110,14 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
   }
 
   private prepareTable() {
+    let columnDefs=[]
     this.frameworkComponents = {
       customCellRenderer: ColOfObjsGridCellComponent,
       actionColCellRenderer: ViewColOfObjsComponent,
       customColumnFilterComponent: ColumnFilterComponent,
       customFloatingFilterComponent: FloatingFilterComponent,
     };
-    const columnDefs = [
+     columnDefs = [
       ...(
         this.showIndexColumn && !this.historyMode
           ? [{
@@ -138,8 +138,10 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
           historyMode: this.historyMode
         },
         refData: definition,
+        floatingFilter: true,
         minWidth: definition.type === 'Date' ? 162 : 80,
-        width: definition.type === 'Date' ? 162 : 80,
+        // width: definition.type === 'Date' ? 162 : 80,
+        flex: 2,
         onCellClicked: (params) => {
           if (definition.properties.richText || definition.properties.longText) {
             return this.onRowDoubleClick(params)
@@ -169,7 +171,9 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
       {
         headerName: 'Action',
         cellRenderer: 'actionColCellRenderer',
-        maxWidth: 10,
+        // maxWidth: 10,
+        // width: 40,
+        flex: 1,
         suppressToolPanel: true
       }
     ]
@@ -180,9 +184,8 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
       columnDefs,
       pagination: false,
       animateRows: true,
-      floatingFilter: true,
       onGridReady: this.onGridReady.bind(this),
-      onRowDataChanged: this.autoSizeAllColumns.bind(this),
+      onRowDataUpdated: this.autoSizeAllColumns.bind(this),
       // onRowDoubleClicked: this.onRowDoubleClick.bind(this),
       // onGridSizeChanged: this.forceResizeColumns.bind(this),
       rowHeight: 46,
@@ -211,12 +214,12 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
 
   private onGridReady(event) {
     this.gridApi = event.api;
-    this.columnApi = event.columnApi;
+    this.gridApi = event.gridApi;
     if (this.gridApi) {
       this.forceResizeColumns()
     }
     // this.gridApi.sizeColumnsToFit()
-    // this.columnApi.autoSizeAllColumns();
+    // this.gridApi.autoSizeAllColumns();
     this.gridApi.setFilterModel('');
   }
 
@@ -257,13 +260,13 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
   }
 
   private autoSizeAllColumns() {
-    if (!!this.gridApi && !!this.columnApi) {
+    if (!!this.gridApi && !!this.gridApi) {
       setTimeout(() => {
         const container = document.querySelector('.grid-container');
         const availableWidth = !!container ? container.clientWidth - 80 : 900;
-        const allColumns = this.columnApi.getAllColumns();
+        const allColumns = this.gridApi.getColumns();
         allColumns.forEach(col => {
-          this.columnApi.autoSizeColumn(col);
+          this.gridApi.autoSizeColumn(col);
           if (col.getActualWidth() > 200 || this.gridApi.getDisplayedRowCount() === 0) {
             col.setActualWidth(200);
           }
@@ -277,7 +280,7 @@ export class ViewCollectionOfObjectsGridComponent implements OnInit, OnChanges {
   }
 
   private onRowDoubleClick(params: any) {
-    const actionCol = params.columnApi.getAllColumns().find(col => col.getColDef().headerName === 'Action');
+    const actionCol = params.gridApi.getColumns().find(col => col.getColDef().headerName === 'Action');
     const cellRendererInstances = params.api.getCellRendererInstances({ columns: [actionCol], rowNodes: [params.node] });
     if (!!cellRendererInstances && !!cellRendererInstances.length) {
       const crDom = cellRendererInstances[0].getGui();

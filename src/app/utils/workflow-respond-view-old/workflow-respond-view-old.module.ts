@@ -11,7 +11,6 @@ import { ClickOutsideModule } from 'src/app/directive/click-outside/click-outsid
 import { DataGridModule } from '../directives/data-grid/data-grid.module';
 import { RoundCheckModule } from '../round-check/round-check.module';
 import { RadioBtnModule } from '../radio-btn/radio-btn.module';
-import { SortablejsModule } from 'ngx-sortablejs';
 import { DatePickerModule } from '../date-picker/date-picker.module';
 import { SearchBoxModule } from '../search-box/search-box.module';
 import { TruncatedModule } from '../truncated/truncated.module';
@@ -37,7 +36,6 @@ import { OnChangeModule } from 'src/app/directive/on-change/on-change.module';
     DataGridModule,
     RoundCheckModule,
     RadioBtnModule,
-    SortablejsModule,
     DatePickerModule,
     SearchBoxModule,
     TruncatedModule,

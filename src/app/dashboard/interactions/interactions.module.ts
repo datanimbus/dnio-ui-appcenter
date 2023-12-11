@@ -52,10 +52,7 @@ const routes: Routes = [
         LoadingPlaceholderModule,
         PipesModule,
         RoundCheckModule,
-        AgGridModule.withComponents([
-            InteractionGridCellComponent,
-            InteractionGridFilterComponent
-        ]),
+        AgGridModule,
         OnChangeModule
     ],
     declarations: [

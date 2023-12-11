@@ -32,10 +32,7 @@ import { RouterModule } from '@angular/router';
     PdfViewerModule,
     RouterModule,
     // ReactiveFormsModule,
-    AgGridModule.withComponents([
-      AgGridFiltersComponent,
-      AgGridCellComponent,
-    ]),
+    AgGridModule,
   ],
   exports: [WorkflowAgGridComponent]
 

@@ -19,7 +19,7 @@ export class ColOfObjsHeaderCellComponent implements IHeaderAngularComp {
   }
 
   onSortRequested(event) {
-    const order = this.params.column.isSortAscending() ? 'desc' : this.params.column.isSortDescending() ? '' : 'asc';
+    const order = this.params.column.isSortAscending() ? 'desc' : this.params.column.isSortDescending() ? 'desc' : 'asc';
     this.params.setSort(order, event.shiftKey);
   }
 

@@ -3,7 +3,7 @@
         <ng-container *ngFor="let item of values">
             <div class="list-item">
                 <span class="label">{{item.name}} :</span>
-                <span class="value" *ngIf="!item.isSecuredField">{{item.value || '-'}}</span>
+                <span class="value" *ngIf="!item.isSecuredField">{{item?.value?.toString() || '-'}}</span>
                 <span class="value" *ngIf="item.isSecuredField">**********</span>
             </div>
         </ng-container>
