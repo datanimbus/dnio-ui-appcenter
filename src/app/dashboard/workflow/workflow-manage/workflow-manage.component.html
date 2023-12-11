@@ -271,7 +271,7 @@
             </ng-container>
         </ng-container>
         <ng-container *ngIf="wizard.length == 0">
-            <div class="container-fluid">
+            <div class="container-fluid mt-3">
                 <ng-container *ngFor="let def of definition;let i=index; let l=last">
                     <ng-container *ngIf="!checkStateModel(def)">
                         <odp-view-control [definition]="def" [value]="value" [oldValue]="activeAuditOldData" [last]="l"
