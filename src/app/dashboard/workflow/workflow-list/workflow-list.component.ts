@@ -1366,7 +1366,7 @@ export class WorkflowListComponent implements OnInit, OnDestroy {
     respondModal.componentInstance.workflowData = wfData;
     respondModal.componentInstance.serviceData = this.schema;
     respondModal.componentInstance.selectedData = this.selectedRows;
-    respondModal.componentInstance.actions = this.activeTab===3 ? ['discard', 'submit'] : [];
+    respondModal.componentInstance.actions = this.activeTab===3 ? ['discard', 'submit'] :this.activeTab===2 ? ['approve', 'reject'] : [];
     respondModal.result.then(
       close => {
         if (close) {

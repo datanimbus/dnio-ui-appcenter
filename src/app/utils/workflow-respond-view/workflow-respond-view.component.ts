@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/service/common.service';
 import { environment } from 'src/environments/environment';
 import { WorkflowAgGridService } from '../../dashboard/workflow/workflow-list/workflow-ag-grid/workflow-ag-grid.service';
+import { AppService } from 'src/app/service/app.service';
 
 @Component({
   selector: 'odp-workflow-respond-view',
@@ -29,7 +30,8 @@ export class WorkflowRespondViewComponent implements OnInit {
   constructor(public activeModal: NgbActiveModal,
     public commonService: CommonService,
     public ts: ToastrService,
-    private gridService: WorkflowAgGridService) {
+    private gridService: WorkflowAgGridService,
+    private appService: AppService) {
     this.workflowFilesList = [];
     this.workflowUploadedFiles = [];
     this.fileProgress = {};

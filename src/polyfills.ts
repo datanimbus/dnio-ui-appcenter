@@ -50,7 +50,7 @@ import 'zone.js';
 // import 'zone.js/dist/proxy';
 // import 'zone.js/dist/async-test';
 // import 'zone.js/dist/sync-test';
-// import '@angular/localize/init';
+import '@angular/localize/init';
 
 
 /***************************************************************************************************
