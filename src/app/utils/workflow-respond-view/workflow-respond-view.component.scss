@@ -29,3 +29,25 @@
 .hidden-input {
   z-index: -100;
 }
+
+//Carousel Changes
+
+::ng-deep .carousel {
+
+  .carousel-indicators {
+    .active {
+      opacity: 0;
+    }
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+    background: transparent;
+    border: none
+  }
+
+  .visually-hidden {
+    display: none;
+  }
+
+}
