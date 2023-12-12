@@ -100,7 +100,7 @@ export class AgGridCellComponent implements ICellRendererAngularComp {
         const respondModal: NgbModalRef = this.modalService.open(WorkflowRespondViewComponent, { centered: true, size: 'lg', beforeDismiss: () => false });
         respondModal.componentInstance.workflowData = this.data;
         respondModal.componentInstance.serviceData = this.appService.serviceData;
-        respondModal.componentInstance.actions = this.appService.workflowTab===3 ? ['discard', 'submit'] : [];
+        respondModal.componentInstance.actions = this.appService.workflowTab===3 ? ['discard', 'submit'] : this.appService.workflowTab===2 ? ['approve', 'reject'] : [];
         respondModal.result.then(res => {
           this.params.api.purgeInfiniteCache();
         }, err => { });
