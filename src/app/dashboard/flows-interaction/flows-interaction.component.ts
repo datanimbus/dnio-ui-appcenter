@@ -587,32 +587,32 @@ export class FlowsInteractionComponent implements OnInit {
 
 
   onChartFilterChange(event){
-    const currentDate = new Date();
-    const startDate = new Date(currentDate);
-    startDate.setHours(0, 0, 0, 0);
-    let filterDate = startDate;
-    if(this.selectedChartFilter === 'weekly'){
-      const startOfWeek = new Date(currentDate);
-      startOfWeek.setDate(currentDate.getDate() - currentDate.getDay()); 
-      filterDate =  startOfWeek ;
-    }
-    else if(this.selectedChartFilter === 'monthly'){
-      const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-      filterDate = startOfMonth;
-    }
-    const obsArr = [this.getRecordCountWithStatus('SUCCESS', filterDate), this.getRecordCountWithStatus('PENDING', filterDate), this.getRecordCountWithStatus('ERROR', filterDate)]
+    // const currentDate = new Date();
+    // const startDate = new Date(currentDate);
+    // startDate.setHours(0, 0, 0, 0);
+    // let filterDate = startDate;
+    // if(this.selectedChartFilter === 'weekly'){
+    //   const startOfWeek = new Date(currentDate);
+    //   startOfWeek.setDate(currentDate.getDate() - currentDate.getDay()); 
+    //   filterDate =  startOfWeek ;
+    // }
+    // else if(this.selectedChartFilter === 'monthly'){
+    //   const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    //   filterDate = startOfMonth;
+    // }
+    // const obsArr = [this.getRecordCountWithStatus('SUCCESS', filterDate), this.getRecordCountWithStatus('PENDING', filterDate), this.getRecordCountWithStatus('ERROR', filterDate)]
 
-    zip(obsArr).subscribe({
-      next: (res) => {
-        this.graphDataCounts = res;
-        this.graphDataTotalCount = this.graphDataCounts.reduce((a, b) => a + b, 0);
-        console.log(res);
-      },
-      error: err => {
-        this.commonService.errorToast(err);
-      },
-      complete: () => {}
-    })
+    // zip(obsArr).subscribe({
+    //   next: (res) => {
+    //     this.graphDataCounts = res;
+    //     this.graphDataTotalCount = this.graphDataCounts.reduce((a, b) => a + b, 0);
+    //     console.log(res);
+    //   },
+    //   error: err => {
+    //     this.commonService.errorToast(err);
+    //   },
+    //   complete: () => {}
+    // })
   }
 
   getRecordCountWithStatus(status, startDate){

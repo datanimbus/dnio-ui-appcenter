@@ -92,6 +92,10 @@ export class IntegrationListComponent implements OnInit {
     }
   }
 
+  loadFlowOverview(){
+    this.router.navigate(['/', this.commonService.app._id, 'flow', 'overview']);
+  }
+
   search(value) {
     const self = this;
     if (!value || !value.trim()) {

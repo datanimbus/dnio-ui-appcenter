@@ -29,8 +29,15 @@ import { FileViewModule } from 'src/app/utils/file-view/file-view.module';
 import { UserViewModule } from 'src/app/utils/user-view/user-view.module';
 import { RelationViewModule } from 'src/app/utils/relation-view/relation-view.module';
 import { ChartsModule } from 'src/app/charts/charts.module';
+import { FlowsOverviewwComponent } from './flows-overview/flows-overview.component';
+import { SearchBoxModule } from 'src/app/utils/search-box/search-box.module';
 
 const routes: Routes = [
+  {
+    path: 'overview', component: FlowsOverviewwComponent, data: {
+      breadcrumb: ['Flows']
+    }
+  },
   { path: ':flowId', pathMatch: 'full', component: FlowsInteractionComponent, data: { breadcrumb: ['Flow']} },
   { path: ':flowId/:interactionId', component: FlowsInteractionViewComponent, data: { breadcrumb: ['Flow']} }
 ];
@@ -42,7 +49,8 @@ const routes: Routes = [
     FlowNodeViewComponent,
     SearchForComponent,
     SearchForFieldComponent,
-    FlowsFiltersComponent
+    FlowsFiltersComponent,
+    FlowsOverviewwComponent
   ],
   imports: [
     CommonModule,
@@ -65,7 +73,8 @@ const routes: Routes = [
     FileViewModule,
     UserViewModule,
     RelationViewModule,
-    ChartsModule
+    ChartsModule,
+    SearchBoxModule
   ],
   providers: [FlowsInteractionService,DatePipe],
   exports: [

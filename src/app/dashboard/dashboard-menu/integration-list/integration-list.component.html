@@ -12,6 +12,10 @@
         <div class="list-item-label d-flex align-items-center text-truncate">All Interactions</div>
     </div>
 </div> -->
+<div class="menu-list-item d-flex align-items-center text-secondary" (click)="loadFlowOverview()"
+    *ngIf="records.length>0">
+    All Flows
+</div>
 <div class="">
     <odp-search-box (enteredText)="search($event)" (reset)="resetSearch();" tooltipDir="left" placeholder="Search interactions"
 [value]="searchText" [isMenu]="true">
