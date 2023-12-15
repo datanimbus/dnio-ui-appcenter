@@ -58,3 +58,12 @@
     color: $border;
   }
 }
+
+::ng-deep .menu-search {
+  border: none;
+  
+  input:focus {
+    outline: none;
+    box-shadow: none !important;
+  }
+}

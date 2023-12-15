@@ -28,6 +28,7 @@ import { DatePickerComponent } from 'src/app/utils/date-picker/date-picker.compo
 import { FileViewModule } from 'src/app/utils/file-view/file-view.module';
 import { UserViewModule } from 'src/app/utils/user-view/user-view.module';
 import { RelationViewModule } from 'src/app/utils/relation-view/relation-view.module';
+import { ChartsModule } from 'src/app/charts/charts.module';
 
 const routes: Routes = [
   { path: ':flowId', pathMatch: 'full', component: FlowsInteractionComponent, data: { breadcrumb: ['Flow']} },
@@ -63,7 +64,8 @@ const routes: Routes = [
     AgGridModule,
     FileViewModule,
     UserViewModule,
-    RelationViewModule
+    RelationViewModule,
+    ChartsModule
   ],
   providers: [FlowsInteractionService,DatePipe],
   exports: [
