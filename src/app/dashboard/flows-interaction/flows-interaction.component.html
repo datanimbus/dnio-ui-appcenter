@@ -1,69 +1,84 @@
 <div class="p-2">
-    <div class="d-flex align-items-center pt-2">
-        <button class="btn btn-white border d-flex align-items-center font-12 mr-3" (click)="getRecordsCount()">
-            <span class="dsi dsi-refresh"></span>
-        </button>
-        <odp-flows-filters #listFilters [allColumns]="columnDefs" [allFilters]="allFilters" (filterCleared)="resetFilter()"
-        (refine)="onRefine($event)" [appliedFilter]="selectedSavedView">
-        </odp-flows-filters>
-        <button *ngIf="selectedSavedView || filterModel" type="button" class="btn btn-link text-accent py-0" (click)="resetFilter()">
-        <span class="fa fa-times mr-2"></span>
-        <span class="text">Clear Filters</span>
-        </button>
-        <div class="ml-auto mr-2 d-flex">
-            <button class="btn btn-white border d-flex align-items-center font-12 mr-2" (click)="filterStatus('Success')">
-                <span class="fa fa-filter font-10 text-success"></span>
-                <span class="ml-1 fw-500 text-success">SUCCESS ({{successCount}})</span>
+    <!-- <div class="border-bottom d-flex justify-content-between">
+       <div class="p-2" *ngIf="graphDataTotalCount > 0" >
+        <odp-doughnut [labelArray]="doughnutConfig().labels" [dataArray]="graphDataCounts" [bgColorArray]="doughnutConfig().backgroundColor" [innerText]="'Total Count: ' + graphDataTotalCount" chartTitle="Interactions"></odp-doughnut>
+       </div>
+       <span *ngIf="graphDataTotalCount === 0"  class="pl-1 fw-500 d-flex align-items-center">No graphical {{selectedChartFilter}} data to show for the interaction.</span>
+       <div class="py-2">
+        <select class="form-control" style="width: 200px" (change)="onChartFilterChange($event)" [(ngModel)]="selectedChartFilter"> 
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+        </select>
+       </div>
+    </div> -->
+    <div>
+        <div class="d-flex align-items-center pt-2">
+            <button class="btn btn-white border d-flex align-items-center font-12 mr-3" (click)="getRecordsCount()">
+                <span class="dsi dsi-refresh"></span>
             </button>
-            <button class="btn btn-white border d-flex align-items-center font-12 mr-2" (click)="filterStatus('Pending')">
-                <span class="fa fa-filter font-10 text-warning"></span>
-                <span class="ml-1 fw-500 text-warning">PENDING ({{pendingCount}})</span>
+            <odp-flows-filters #listFilters [allColumns]="columnDefs" [allFilters]="allFilters" (filterCleared)="resetFilter()"
+            (refine)="onRefine($event)" [appliedFilter]="selectedSavedView">
+            </odp-flows-filters>
+            <button *ngIf="selectedSavedView || filterModel" type="button" class="btn btn-link text-accent py-0" (click)="resetFilter()">
+            <span class="fa fa-times mr-2"></span>
+            <span class="text">Clear Filters</span>
             </button>
-            <button class="btn btn-white border d-flex align-items-center font-12 mr-4" (click)="filterStatus('Error')" >
-                <span class="fa fa-filter font-10 text-danger"></span>
-                <span class="ml-1 fw-500 text-danger">ERROR ({{errorCount}})</span>
-            </button>
-            <span class="d-flex justify-content-center align-items-center mr-3 ml-3">Total Interactions : {{currentRecordsCount}}</span>
+            <div class="ml-auto mr-2 d-flex">
+                <button class="btn btn-white border d-flex align-items-center font-12 mr-2" (click)="filterStatus('Success')">
+                    <span class="fa fa-filter font-10 text-success"></span>
+                    <span class="ml-1 fw-500 text-success">SUCCESS ({{successCount}})</span>
+                </button>
+                <button class="btn btn-white border d-flex align-items-center font-12 mr-2" (click)="filterStatus('Pending')">
+                    <span class="fa fa-filter font-10 text-warning"></span>
+                    <span class="ml-1 fw-500 text-warning">PENDING ({{pendingCount}})</span>
+                </button>
+                <button class="btn btn-white border d-flex align-items-center font-12 mr-4" (click)="filterStatus('Error')" >
+                    <span class="fa fa-filter font-10 text-danger"></span>
+                    <span class="ml-1 fw-500 text-danger">ERROR ({{errorCount}})</span>
+                </button>
+                <span class="d-flex justify-content-center align-items-center mr-3 ml-3">Total Interactions : {{currentRecordsCount}}</span>
+            </div>
+      
         </div>
-  
-    </div>
-    <div class="list-wrapper border rounded bg-white mt-2">
-        <!-- <div class="list-group list-group-flush">
-            <div class="list-group-item d-flex align-items-center bg-light fw-500 font-12 text-secondary">
-                <span class="item-id">ID</span>
-                <span class="item-txn-id">Txn ID</span>
-                <span class="item-remote-txn-id">Remote Txn ID</span>
-                <span class="item-status">Status</span>
-                <span class="item-content-type">Payload Type</span>
-                <span class="item-content-length">Payload Size</span>
-                <span class="item-start-time">Start Time</span>
-                <span class="item-duration">Duration</span>
-            </div>
-            <ng-container *ngFor="let item of interactionList">
-                <div class="list-group-item d-flex align-items-center hover" [routerLink]="item._id">
-                    <span class="item-id">{{item._id}}</span>
-                    <pre class="m-0 item-txn-id">{{item.headers['data-stack-txn-id']}}</pre>
-                    <pre class="m-0 item-remote-txn-id">{{item.headers['data-stack-remote-txn-id']}}</pre>
-                    <span class="item-status fw-500 font-12" [ngClass]="getStatusClass(item)">{{item.status}}</span>
-                    <span class="item-content-type">{{getContentType(item.headers['content-type'])}}</span>
-                    <span class="item-content-length">{{item.headers['content-length'] | filesize}}</span>
-                    <span class="item-start-time">{{item._metadata.createAt | date:'yyyy MMM dd, HH:mm:ss'}}</span>
-                    <span class="item-duration">{{getDuration(item)}}</span>
+        <div class="list-wrapper border rounded bg-white mt-2">
+            <!-- <div class="list-group list-group-flush">
+                <div class="list-group-item d-flex align-items-center bg-light fw-500 font-12 text-secondary">
+                    <span class="item-id">ID</span>
+                    <span class="item-txn-id">Txn ID</span>
+                    <span class="item-remote-txn-id">Remote Txn ID</span>
+                    <span class="item-status">Status</span>
+                    <span class="item-content-type">Payload Type</span>
+                    <span class="item-content-length">Payload Size</span>
+                    <span class="item-start-time">Start Time</span>
+                    <span class="item-duration">Duration</span>
                 </div>
-            </ng-container>
-            <div *ngIf="!interactionList || interactionList.length==0"
-                class="list-group-item d-flex align-items-center">
-                <p class="m-0">No Interaction Found</p>
-            </div>
-        </div> -->
-        <!-- <div class="no-record text-center m-3 p-4 bg-white rounded" *ngIf="!dataSource">
-            <div class="no-records-img mx-auto"></div>
-            <span class="text-grey font-16">No Interaction Found.
-            </span>
-        </div> -->
-        <ag-grid-angular #agGrid style="width: 100%; height: 100%;"
-            class="list-wrapper ag-theme-balham" [datasource]="dataSource" [columnDefs]="columnDefs" (gridReady)="onGridReady($event)" rowHeight="40"
-            (rowDoubleClicked)="rowDoubleClicked($event)" (sortChanged)="sortChanged($event)" rowModelType="infinite" cacheBlockSize="30" [overlayNoRowsTemplate]="noRowsTemplate" (filterChanged)="filterModified($event)">
-        </ag-grid-angular>
+                <ng-container *ngFor="let item of interactionList">
+                    <div class="list-group-item d-flex align-items-center hover" [routerLink]="item._id">
+                        <span class="item-id">{{item._id}}</span>
+                        <pre class="m-0 item-txn-id">{{item.headers['data-stack-txn-id']}}</pre>
+                        <pre class="m-0 item-remote-txn-id">{{item.headers['data-stack-remote-txn-id']}}</pre>
+                        <span class="item-status fw-500 font-12" [ngClass]="getStatusClass(item)">{{item.status}}</span>
+                        <span class="item-content-type">{{getContentType(item.headers['content-type'])}}</span>
+                        <span class="item-content-length">{{item.headers['content-length'] | filesize}}</span>
+                        <span class="item-start-time">{{item._metadata.createAt | date:'yyyy MMM dd, HH:mm:ss'}}</span>
+                        <span class="item-duration">{{getDuration(item)}}</span>
+                    </div>
+                </ng-container>
+                <div *ngIf="!interactionList || interactionList.length==0"
+                    class="list-group-item d-flex align-items-center">
+                    <p class="m-0">No Interaction Found</p>
+                </div>
+            </div> -->
+            <!-- <div class="no-record text-center m-3 p-4 bg-white rounded" *ngIf="!dataSource">
+                <div class="no-records-img mx-auto"></div>
+                <span class="text-grey font-16">No Interaction Found.
+                </span>
+            </div> -->
+            <ag-grid-angular #agGrid style="width: 100%; height: 100%;"
+                class="list-wrapper ag-theme-balham" [datasource]="dataSource" [columnDefs]="columnDefs" (gridReady)="onGridReady($event)" rowHeight="40"
+                (rowDoubleClicked)="rowDoubleClicked($event)" (sortChanged)="sortChanged($event)" rowModelType="infinite" cacheBlockSize="30" [overlayNoRowsTemplate]="noRowsTemplate" (filterChanged)="filterModified($event)">
+            </ag-grid-angular>
+        </div>
     </div>
 </div>

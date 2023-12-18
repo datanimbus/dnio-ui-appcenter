@@ -27,6 +27,7 @@
     "@types/pdfjs-dist": "2.10.377",
     "ag-grid-angular": "^31.0.0",
     "ag-grid-community": "^31.0.0",
+    "chart.js": "^4.4.1",
     "fuse.js": "^6.6.2",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",

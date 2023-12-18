@@ -14,12 +14,14 @@ import { FlowsInteractionService } from './flows-interaction.service';
 import { FlowsFiltersComponent } from './flows-filters/flows-filters.component';
 import { SessionService } from 'src/app/service/session.service';
 import { AppService } from 'src/app/service/app.service';
+import { Colors } from 'src/app/service/theme.service';
+import { zip } from 'rxjs';
 
 @Component({
   selector: 'odp-flows-interaction',
   templateUrl: './flows-interaction.component.html',
   styleUrls: ['./flows-interaction.component.scss'],
-  providers: [DatePipe, FileSizePipe]
+  providers: [DatePipe, FileSizePipe, Colors]
 })
 export class FlowsInteractionComponent implements OnInit {
 
@@ -57,6 +59,10 @@ export class FlowsInteractionComponent implements OnInit {
   advanceFilter: boolean;
   breadcrumb: any;
   currentRecords: any = [];
+  graphData: Array<any> = [];
+  graphDataCounts: Array<any> = [];
+  graphDataTotalCount: number = 0;
+  selectedChartFilter: string='daily';
   constructor(private commonService: CommonService,
     private route: ActivatedRoute,
     private flowsService: FlowsInteractionService,
@@ -64,7 +70,7 @@ export class FlowsInteractionComponent implements OnInit {
     private fileSizePipe: FileSizePipe,
     private router: Router,
     private fb: FormBuilder,
-    private sessionService: SessionService,
+    private colors: Colors,
     public appService: AppService,) {
     const self = this;
     this.interactionList = [];
@@ -95,6 +101,7 @@ export class FlowsInteractionComponent implements OnInit {
             }
             this.breadcrumb.push(res.name)
             this.commonService.breadcrumbPush(this.breadcrumb)
+            this.selectedChartFilter == 'daily'
           })
         }
       })
@@ -177,7 +184,7 @@ export class FlowsInteractionComponent implements OnInit {
     self.flowsService.selectedSavedView = null;
     self.apiConfig.sort = '-_metadata.createdAt';
     this.flowsService.setSortModel(self.apiConfig.sort)
-    self.agGrid?.api?.applyColumnState(null);
+    self.agGrid?.api?.applyColumnState({});
     const columnIds = self.agGrid?.api?.getColumns().map(e => e.getColId());
     self.agGrid?.api?.setColumnsVisible(columnIds, true);
     columnIds?.forEach((e, i) => {
@@ -360,7 +367,7 @@ export class FlowsInteractionComponent implements OnInit {
         resizable: true,
         suppressMovable: true,
         valueFormatter: (params) => {
-          return this.datePipe.transform(params.data?._metadata.createdAt, 'yyyy MMM dd, HH:mm:ss') || '';
+          return this.datePipe.transform(params.data?._metadata?.createdAt, 'yyyy MMM dd, HH:mm:ss') || '';
         },
         key: '_metadata.createdAt',
         dataKey: '_metadata.createdAt',
@@ -484,6 +491,7 @@ export class FlowsInteractionComponent implements OnInit {
     this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${this.flowId}?countOnly=true`, { filter, expand: true })
       .subscribe(res => {
         this.currentRecordsCount = res;
+        this.onChartFilterChange('day')
         this.onGridReady();
         if (!environment.production) {
           console.log(this.currentRecordsCount);
@@ -564,6 +572,59 @@ export class FlowsInteractionComponent implements OnInit {
     this.apiConfig.filter = { status: type.toUpperCase() };
     this.filterModel = this.apiConfig.filter
     this.getRecordsCount()
+  }
+
+  doughnutConfig() {
+    const success = this.colors.success;
+    const error =this.colors.danger;
+    const warning = this.colors.warning;
+    return {
+      labels: ['Success', 'Pending', 'Error'],
+      data: [this.successCount, this.pendingCount, this.errorCount],
+      backgroundColor: [success, warning, error],
+      }
+  }
+
+
+  onChartFilterChange(event){
+    // const currentDate = new Date();
+    // const startDate = new Date(currentDate);
+    // startDate.setHours(0, 0, 0, 0);
+    // let filterDate = startDate;
+    // if(this.selectedChartFilter === 'weekly'){
+    //   const startOfWeek = new Date(currentDate);
+    //   startOfWeek.setDate(currentDate.getDate() - currentDate.getDay()); 
+    //   filterDate =  startOfWeek ;
+    // }
+    // else if(this.selectedChartFilter === 'monthly'){
+    //   const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    //   filterDate = startOfMonth;
+    // }
+    // const obsArr = [this.getRecordCountWithStatus('SUCCESS', filterDate), this.getRecordCountWithStatus('PENDING', filterDate), this.getRecordCountWithStatus('ERROR', filterDate)]
+
+    // zip(obsArr).subscribe({
+    //   next: (res) => {
+    //     this.graphDataCounts = res;
+    //     this.graphDataTotalCount = this.graphDataCounts.reduce((a, b) => a + b, 0);
+    //     console.log(res);
+    //   },
+    //   error: err => {
+    //     this.commonService.errorToast(err);
+    //   },
+    //   complete: () => {}
+    // })
+  }
+
+  getRecordCountWithStatus(status, startDate){
+    const date = new Date(startDate)
+    const filter = {
+      status: status,
+      '_metadata.lastUpdated' : {
+        $gte : (date.toISOString())
+      }
+    }
+    return this.commonService.get('pm', `/${this.commonService.app._id}/interaction/${this.flowId}?countOnly=true`, { filter, expand: true })
+      
   }
 
   get successCount() {

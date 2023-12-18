@@ -1,0 +1,50 @@
+<div class="default-loader d-flex justify-content-center h-100 w-100" *ngIf="showLazyLoader">
+    <div class="align-self-center text-center">
+        <div class="spinner-border text-dark" role="status">
+            <span class="sr-only">Processing...</span>
+        </div>
+        <div class="text-secondary mt-2">Processing...</div>
+    </div>
+</div>
+<div class="flows-overview-page w-100 " *ngIf="!showLazyLoader">
+    <div class="d-flex align-items-center justify-content-between">
+        <div class="font-22 fw-700">All Flows</div>
+        <div>
+            <odp-search-box (enteredText)="search($event)" (reset)="resetSearch();" tooltipDir="left">
+            </odp-search-box>
+        </div>
+    </div>
+    <div class="row no-gutters">
+        <div class="col-3" *ngFor="let flow of records">
+            <div class="bg-white ds-item mr-3 rounded mt-3 hover" (click)="navigate(flow)">
+                <div class="px-3 pt-3">
+                    <div class="ds-name font-12 fw-500">{{flow.name.toUpperCase()}}</div>
+                    <div class="last-updated font-11 fw-400 font-italic text-grey">Last Invoked: 
+                        {{flow.lastInvoked || 'N/A'}}</div>
+                </div>
+                <div class="d-flex flex-column p-3">
+                    <div class="d-flex">
+                        <div class="d-flex flex-column mr-5 pr-1">
+                            <span class="text-secondary font-11 fw-400">Success Count</span>
+                            <span class="text-dark font-14 fw-700">{{flow.counts?.success || 0}}</span>
+                        </div>
+                        <div class="d-flex flex-column ml-4">
+                            <span class="text-secondary font-11 fw-400">Pending Count</span>
+                            <span class="text-dark font-14 fw-700">{{flow.counts?.pending || 0}}</span>
+                        </div>
+                    </div>
+                    <div class="d-flex mt-2">
+                        <div class="d-flex flex-column mr-5">
+                            <span class="text-secondary font-11 fw-400">Error Count</span>
+                            <span class="text-dark font-14 fw-700">{{flow.counts?.error || 0}}</span>
+                        </div>
+                        <div id="right" class="d-flex flex-column ml-5">
+                            <span class="text-secondary font-11 fw-400">Total Count</span>
+                            <span class="text-dark font-14 fw-700">{{flow.counts?.total || 0}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
