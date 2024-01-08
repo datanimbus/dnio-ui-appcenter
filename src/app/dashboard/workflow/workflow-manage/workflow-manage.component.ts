@@ -766,7 +766,7 @@ export class WorkflowManageComponent implements OnInit, OnDestroy {
     const respondModal: NgbModalRef = this.modalService.open(WorkflowRespondViewComponent, { centered: true, size: 'lg', beforeDismiss: () => false });
     respondModal.componentInstance.workflowData = this.selectedData;
     respondModal.componentInstance.serviceData = this.schema;
-    respondModal.componentInstance.actions = this.selectedData.operation == 'DELETE' ? ['approve', 'reject'] : [];
+    respondModal.componentInstance.actions = this.selectedData.operation == 'DELETE' ? ['approve', 'reject'] : this.selectedData.status === 'Draft' ? ['discard', 'submit']: [];
     respondModal.result.then(close => {
       if (close) {
         this.router.navigate(['/', this.commonService.app._id, 'workflow', this.appService.serviceId]);
